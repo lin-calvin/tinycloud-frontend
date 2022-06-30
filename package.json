@@ -1,0 +1,25 @@
+{
+  "name": "tinycloud_frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rollup -c",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "GPL3",
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "@web/rollup-plugin-copy": "^0.3.0",
+    "@web/rollup-plugin-html": "^1.10.3",
+    "lit": "^2.2.6",
+    "rollup": "^2.75.7",
+    "rollup-plugin-minify-html-literals": "^1.2.6",
+    "rollup-plugin-summary": "^1.4.3",
+    "rollup-plugin-terser": "^7.0.2"
+  },
+  "dependencies": {
+    "prettier": "^2.7.1"
+  }
+}
