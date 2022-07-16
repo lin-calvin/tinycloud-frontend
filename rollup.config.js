@@ -13,17 +13,18 @@ export default {
     html({
       input: 'src/index.html',
       format: 'esm',
+        publicPath:"static/"
     }),
     // Resolve bare module specifiers to relative paths
     resolve(),
     // Minify HTML template literals
     minifyHTML(),
     // Minify JS
-//    terser({
-//      ecma: 2020,
-//      module: true,
-//      warnings: true,
-//    }),
+    terser({
+      ecma: 2020,
+      module: false,
+      warnings: true,
+    }),
     // Print bundle summary
     summary(),
     // Optional: copy any static assets to build directory

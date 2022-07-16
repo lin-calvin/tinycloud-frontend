@@ -4,7 +4,18 @@ import { choose } from "lit/directives/choose.js";
 
 export class tinycloud extends LitElement {
   static properties = { url: {} };
-  context_menu = {};
+  static styles = css`
+    :host {
+      overflow: hidden;
+      display: block;
+      height: 98vh;
+    }
+    #content {
+      overflow: auto;
+      display: flex-root;
+      height: 100%;
+    }
+  `;
   constructor() {
     super();
     this.url = location.hash.split("#")[1];
@@ -19,6 +30,18 @@ export class tinycloud extends LitElement {
   hashchange() {
     this.url = location.hash.split("#")[1];
   }
+  content() {
+    var filelist = new tc_filelist();
+    if (this.url) {
+      filelist.url = this.url;
+    }
+    var fileupload = new tc_fileupload();
+    fileupload.url = this.url;
+    fileupload.reload_func = filelist.load_data;
+    filelist.file_upload = fileupload;
+    filelist.load_data();
+    return html` ${filelist}${fileupload}`;
+  }
   // Render the UI as a function of component state
   render() {
     var filelist = new tc_filelist();
@@ -30,10 +53,13 @@ export class tinycloud extends LitElement {
     fileupload.reload_func = filelist.load_data;
     filelist.file_upload = fileupload;
     filelist.load_data();
-    return html`<p align="center">Tinycloud0.1</p>
-      <hr />
-
-      ${filelist}${fileupload}`;
+    return html`<body>
+      <div id="header">
+        <p>Tinycloud0.1</p>
+        <hr />
+      </div>
+      <div id="content">${filelist}${fileupload}</div>
+    </body>`;
   }
 }
 
@@ -45,14 +71,14 @@ export class tc_filelist extends LitElement {
     }
   `;
   load_data = () => {
-    this.file_upload.style.display="none"
+    this.file_upload.style.display = "none";
     fetch("/dav" + this.url + "?json_mode=1", { method: "PROPFIND" }).then(
       (res) => {
         if (res.ok) {
-          this.file_upload.style.display="block"
+          this.file_upload.style.display = "block";
           res.json().then((res) => (this.files = res.files));
         } else {
-          location.href="#"+this.url.split("/").slice(0, -2).join("/");
+          location.href = "#" + this.url.split("/").slice(0, -2).join("/");
           switch (res.status) {
             case 404:
               alert("文件夹不存在");
