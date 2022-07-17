@@ -4,18 +4,6 @@ import { choose } from "lit/directives/choose.js";
 
 export class tinycloud extends LitElement {
   static properties = { url: {} };
-  static styles = css`
-    :host {
-      overflow: hidden;
-      display: block;
-      height: 98vh;
-    }
-    #content {
-      overflow: auto;
-      display: flex-root;
-      height: 100%;
-    }
-  `;
   constructor() {
     super();
     this.url = location.hash.split("#")[1];
@@ -37,28 +25,19 @@ export class tinycloud extends LitElement {
     }
     var fileupload = new tc_fileupload();
     fileupload.url = this.url;
-    fileupload.reload_func = filelist.load_data;
+    fileupload.uploadCallback = filelist.uploadCallback;
     filelist.file_upload = fileupload;
     filelist.load_data();
     return html` ${filelist}${fileupload}`;
   }
   // Render the UI as a function of component state
   render() {
-    var filelist = new tc_filelist();
-    if (this.url) {
-      filelist.url = this.url;
-    }
-    var fileupload = new tc_fileupload();
-    fileupload.url = this.url;
-    fileupload.reload_func = filelist.load_data;
-    filelist.file_upload = fileupload;
-    filelist.load_data();
     return html`<body>
       <div id="header">
         <p>Tinycloud0.1</p>
         <hr />
       </div>
-      <div id="content">${filelist}${fileupload}</div>
+      <div id="content">${this.content()}</div>
     </body>`;
   }
 }
@@ -70,26 +49,28 @@ export class tc_filelist extends LitElement {
       color: var(--tc-link-color, blue);
     }
   `;
+
+
   load_data = () => {
     this.file_upload.style.display = "none";
-    fetch("/dav" + this.url + "?json_mode=1", { method: "PROPFIND" }).then(
-      (res) => {
-        if (res.ok) {
-          this.file_upload.style.display = "block";
-          res.json().then((res) => (this.files = res.files));
-        } else {
-          location.href = "#" + this.url.split("/").slice(0, -2).join("/");
-          switch (res.status) {
-            case 404:
-              alert("文件夹不存在");
-              break;
-            case 403:
-              alert("无权访问");
-              break;
-          }
+    return fetch("/dav" + this.url + "?json_mode=1", {
+      method: "PROPFIND",
+    }).then((res) => {
+      if (res.ok) {
+        this.file_upload.style.display = "block";
+        res.json().then((res) => (this.files = res.files.sort((a,b)=>{return a["name"]>b["name"]})));
+      } else {
+        location.href = "#" + this.url.split("/").slice(0, -2).join("/");
+        switch (res.status) {
+          case 404:
+            alert("文件夹不存在");
+            break;
+          case 403:
+            alert("无权访问");
+            break;
         }
       }
-    );
+    });
   };
   delete_file = (filename) => {
     if (!confirm("删除文件")) {
@@ -121,7 +102,6 @@ export class tc_filelist extends LitElement {
           window.open("/dav" + this.url + filename);
         },
         下载文件: () => {
-          console.log(e);
           var m = document.createEvent("MouseEvents");
           m.initEvent("click", true, true);
           e.originalTarget.dispatchEvent(m);
@@ -148,11 +128,30 @@ export class tc_filelist extends LitElement {
     super();
     this.menu = new tc_contextmenu();
     var files;
+    var renderJobs;
     this.url = "/";
-    console.log(this.menu);
+
     //this.load_data(); //fetch("/dav/"+"/"+"?json_mode=1",{  method: 'PROPFIND'}).then(res=>{res.json().then(res=>this.files=res.files)})
     //    this.renderRoot.addEventListener("contextmenu",this.contextmenu)
   }
+  scrollToFile(file) {
+    var fileElement = this.shadowRoot.getElementById("file-" + file);
+    fileElement.scrollIntoView({ behavior: "smooth" });
+    fileElement.style.background = "gray";
+    setTimeout(() => {
+      fileElement.style.background = "";
+    }, 1000);
+  }
+  uploadCallback = (filename) => {
+    this.files.push({
+      name: filename,
+      path: this.url + filename,
+      type: "file",
+    });
+    this.files.sort((a,b)=>{return a["name"]>b["name"]})
+    this.update();
+    this.scrollToFile(filename);
+  };
   // Render the UI as a function of component stat
   render() {
     this.renderRoot.removeEventListener("contextmenu", this.contextmenu);
@@ -161,8 +160,11 @@ export class tc_filelist extends LitElement {
     if (!this.files) {
       return;
     }
+    for (job in this.renderJobs) {
+      job();
+    }
+    this.renderJobs = [];
     var prev = this.url.split("/").slice(0, -2).join("/");
-    console.log(prev);
     return html`
       ${this.menu}
       <strong>Path:${decodeURIComponent(this.url)}</strong></br>
@@ -174,12 +176,12 @@ export class tc_filelist extends LitElement {
             [
               "dir",
               () =>
-                html`<a tc-filename=${file.name} class=dir href=#${this.url}/${file.name}/>${file.name}/</a>`,
+                html`<a id=file-${file.name}  tc-filename=${file.name} class=dir href=#${this.url}/${file.name}/>${file.name}/</a>`,
             ],
             [
               "file",
               () =>
-                html`<a class=file tc-filename=${file.name} href=/dav/${this.url}/${file.name} download=${file.name}>${file.name}</a>`,
+                html`<a class=file id=file-${file.name} tc-filename=${file.name} href=/dav/${this.url}/${file.name} download=${file.name}>${file.name}</a>`,
             ],
           ])}</br>`
       )}</div>`;
@@ -187,7 +189,7 @@ export class tc_filelist extends LitElement {
 }
 
 export class tc_fileupload extends LitElement {
-  static properties = { url: {}, reload_func: {} };
+  static properties = { url: {}, uploadCallback: {} };
   static styles = css`
     div {
       width: 20rem;
@@ -206,13 +208,13 @@ export class tc_fileupload extends LitElement {
     fetch("/dav" + this.url + "/" + file.name, {
       method: "PUT",
       body: file,
-    }).then(() => this.reload_func());
+    }).then(() => this.uploadCallback(file.name));
   }
 
   render() {
     this.drop = document.createElement("div");
     this.drop.innerHTML = "<p align='center'>Drop file in<p>";
-    this.drop.addEventListener(
+    /*    this.drop.addEventListener(
       "dragenter",
       (e) => {
         e.preventDefault();
@@ -225,10 +227,11 @@ export class tc_fileupload extends LitElement {
         e.preventDefault();
       },
       false
-    );
+    ); */
     this.drop.addEventListener(
       "drop",
       (e) => {
+        e.preventDefault();
         this.upload_file(e.dataTransfer.files[0]);
       },
       false
@@ -272,8 +275,8 @@ export class tc_contextmenu extends LitElement {
     var context = this.shadowRoot.getElementById("context");
     context.style.display = "block";
 
-    var x = e.clientX;
-    var y = e.clientY;
+    var x = e.pageX;
+    var y = e.pageY;
 
     context.style.left = x + "px";
     context.style.top = y + "px";
