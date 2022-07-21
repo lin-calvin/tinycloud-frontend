@@ -62,11 +62,11 @@ export class tc_filelist extends LitElement {
             return a["name"] > b["name"];
           });
           this.files = files.filter((file) => {
-            if (this.showHidden) {
+            
               if (file.name.startsWith(".")) {
-                return false
+                return !this.showHidden
               }
-            }
+            
             return true
           });
         });
