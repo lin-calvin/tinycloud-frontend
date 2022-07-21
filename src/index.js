@@ -43,7 +43,7 @@ export class tinycloud extends LitElement {
 }
 
 export class tc_filelist extends LitElement {
-  static properties = { files: {}, url: {}, menu: {}, file_upload: {} };
+  static properties = { files: {}, url: {}, menu: {}, file_upload: {} , showJHidde:{}};
   static styles = css`
     a {
       color: var(--tc-link-color, blue);
