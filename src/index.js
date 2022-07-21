@@ -61,12 +61,14 @@ export class tc_filelist extends LitElement {
           var files = res.files.sort((a, b) => {
             return a["name"] > b["name"];
           });
-          this.files=files.map((file) => {
-            if (this.showHidden && file.name.startsWith(".")) {
-              return file;
+          this.files = files.map((file) => {
+            if (this.showHidden) {
+              if (file.name.startsWith(".")) {
+                return file;
+              }
             }
             if (!file.name.startsWith(".")) {
-             return file
+              return file;
             }
           });
         });
