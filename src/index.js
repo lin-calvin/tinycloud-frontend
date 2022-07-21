@@ -62,10 +62,10 @@ export class tc_filelist extends LitElement {
             return a["name"] > b["name"];
           });
           this.files=files.map((file) => {
-            if (this.showHidden & file.name.startswith(".")) {
+            if (this.showHidden & file.name.startsWith(".")) {
               return file;
             }
-            if (!file.name.startswith(".")) {
+            if (!file.name.startsWith(".")) {
              return file
             }
           });
