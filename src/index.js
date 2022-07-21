@@ -139,7 +139,7 @@ export class tc_filelist extends LitElement {
   };
   constructor() {
     super();
-    this.showHidden = False;
+    this.showHidden = false;
     this.menu = new tc_contextmenu();
     var files;
     var renderJobs;
