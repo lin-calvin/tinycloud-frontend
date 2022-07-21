@@ -131,6 +131,7 @@ export class tc_filelist extends LitElement {
         上传文件: () => {
           this.file_upload.input_form.click();
         },
+       显示隐藏文件: ()=>{this.showHidden=!this.showHidden},
       };
       this.menu.show(e);
     }
