@@ -43,7 +43,7 @@ export class tinycloud extends LitElement {
 }
 
 export class tc_filelist extends LitElement {
-  static properties = { files: {}, url: {}, menu: {}, file_upload: {} , showJHidde:{}};
+  static properties = { files: {}, url: {}, menu: {}, file_upload: {} , showHidden:{}};
   static styles = css`
     a {
       color: var(--tc-link-color, blue);
@@ -139,7 +139,7 @@ export class tc_filelist extends LitElement {
   };
   constructor() {
     super();
-    var showHidden = False;
+    this.showHidden = False;
     this.menu = new tc_contextmenu();
     var files;
     var renderJobs;
