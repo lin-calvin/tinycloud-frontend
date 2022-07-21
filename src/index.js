@@ -59,7 +59,7 @@ export class tc_filelist extends LitElement {
       if (res.ok) {
         this.file_upload.style.display = "block";
         res.json().then((res) => {files = res.files.sort((a,b)=>{return a["name"]>b["name"]});
-this.files.map((file)=>{return file})
+this.files.map((file)=>{if (this.showHidden and file.name.startswith(".")){return file}})
 });
       } else {
         location.href = "#" + this.url.split("/").slice(0, -2).join("/");
@@ -128,6 +128,7 @@ this.files.map((file)=>{return file})
   };
   constructor() {
     super();
+    var showHidden=False
     this.menu = new tc_contextmenu();
     var files;
     var renderJobs;
