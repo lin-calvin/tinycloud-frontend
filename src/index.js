@@ -58,7 +58,9 @@ export class tc_filelist extends LitElement {
     }).then((res) => {
       if (res.ok) {
         this.file_upload.style.display = "block";
-        res.json().then((res) => (files = res.files.sort((a,b)=>{return a["name"]>b["name"]});this.files.map((file)=>{return file})));
+        res.json().then((res) => {}files = res.files.sort((a,b)=>{return a["name"]>b["name"]});
+this.files.map((file)=>{return file})
+});
       } else {
         location.href = "#" + this.url.split("/").slice(0, -2).join("/");
         switch (res.status) {
