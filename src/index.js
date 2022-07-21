@@ -50,7 +50,6 @@ export class tc_filelist extends LitElement {
     }
   `;
 
-
   load_data = () => {
     this.file_upload.style.display = "none";
     return fetch("/dav" + this.url + "?json_mode=1", {
@@ -58,9 +57,19 @@ export class tc_filelist extends LitElement {
     }).then((res) => {
       if (res.ok) {
         this.file_upload.style.display = "block";
-        res.json().then((res) => {files = res.files.sort((a,b)=>{return a["name"]>b["name"]});
-this.files.map((file)=>{if (this.showHidden and file.name.startswith(".")){return file}})
-});
+        res.json().then((res) => {
+          files = res.files.sort((a, b) => {
+            return a["name"] > b["name"];
+          });
+          this.files.map((file) => {
+            if (this.showHidden & file.name.startswith(".")) {
+              return file;
+            }
+            if (!file.name.startswith(".")) {
+             return file
+            }
+          });
+        });
       } else {
         location.href = "#" + this.url.split("/").slice(0, -2).join("/");
         switch (res.status) {
@@ -128,7 +137,7 @@ this.files.map((file)=>{if (this.showHidden and file.name.startswith(".")){retur
   };
   constructor() {
     super();
-    var showHidden=False
+    var showHidden = False;
     this.menu = new tc_contextmenu();
     var files;
     var renderJobs;
@@ -151,7 +160,9 @@ this.files.map((file)=>{if (this.showHidden and file.name.startswith(".")){retur
       path: this.url + filename,
       type: "file",
     });
-    this.files.sort((a,b)=>{return a["name"]>b["name"]})
+    this.files.sort((a, b) => {
+      return a["name"] > b["name"];
+    });
     this.update();
     this.scrollToFile(filename);
   };
