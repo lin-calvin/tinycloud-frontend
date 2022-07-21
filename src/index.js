@@ -58,10 +58,10 @@ export class tc_filelist extends LitElement {
       if (res.ok) {
         this.file_upload.style.display = "block";
         res.json().then((res) => {
-          files = res.files.sort((a, b) => {
+          var files = res.files.sort((a, b) => {
             return a["name"] > b["name"];
           });
-          this.files.map((file) => {
+          this.files=files.map((file) => {
             if (this.showHidden & file.name.startswith(".")) {
               return file;
             }
