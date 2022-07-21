@@ -64,7 +64,7 @@ export class tc_filelist extends LitElement {
           this.files = files.filter((file) => {
             
               if (file.name.startsWith(".")) {
-                return !this.showHidden
+                return this.showHidden
               }
             
             return true
