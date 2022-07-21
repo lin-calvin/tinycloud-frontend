@@ -43,7 +43,13 @@ export class tinycloud extends LitElement {
 }
 
 export class tc_filelist extends LitElement {
-  static properties = { files: {}, url: {}, menu: {}, file_upload: {} , showHidden:{}};
+  static properties = {
+    files: {},
+    url: {},
+    menu: {},
+    file_upload: {},
+    showHidden: {},
+  };
   static styles = css`
     a {
       color: var(--tc-link-color, blue);
@@ -58,16 +64,8 @@ export class tc_filelist extends LitElement {
       if (res.ok) {
         this.file_upload.style.display = "block";
         res.json().then((res) => {
-          var files = res.files.sort((a, b) => {
+          this.files = res.files.sort((a, b) => {
             return a["name"] > b["name"];
-          });
-          this.files = files.filter((file) => {
-            
-              if (file.name.startsWith(".")) {
-                return this.showHidden
-              }
-            
-            return true
           });
         });
       } else {
@@ -131,7 +129,9 @@ export class tc_filelist extends LitElement {
         上传文件: () => {
           this.file_upload.input_form.click();
         },
-       显示隐藏文件: ()=>{this.showHidden=!this.showHidden},
+        显示隐藏文件: () => {
+          this.showHidden = !this.showHidden;
+        },
       };
       this.menu.show(e);
     }
@@ -175,17 +175,21 @@ export class tc_filelist extends LitElement {
     if (!this.files) {
       return;
     }
-    for (job in this.renderJobs) {
-      job();
-    }
-    this.renderJobs = [];
+    var files = this.files.filter((file) => {
+      if (file.name.startsWith(".")) {
+        return this.showHidden;
+      }
+
+      return true;
+    });
+
     var prev = this.url.split("/").slice(0, -2).join("/");
     return html`
       ${this.menu}
       <strong>Path:${decodeURIComponent(this.url)}</strong></br>
       <div>
       <a class=dir href=#${prev}>../</a></br>
-      ${this.files.map(
+      ${files.map(
         (file) =>
           html`${choose(file.type, [
             [
