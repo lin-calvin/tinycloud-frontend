@@ -57,7 +57,9 @@ export class tc_filelist extends LitElement {
     .mountpoint {
       color: green;
     }
-    .broken{color:red}
+    .broken {
+      color: red;
+    }
   `;
 
   load_data = () => {
@@ -212,11 +214,17 @@ export class tc_filelist extends LitElement {
     }
 
     var prev = this.url.split("/").slice(0, -2).join("/");
+    if (this.url != "/") {
+      prev = html`<a class=dir href=#${prev}>../</a></br>`;
+    } else {
+      prev = html``;
+    }
     return html`
       ${this.menu}
       <strong>Path:${decodeURIComponent(this.url)}</strong></br>
       <div>
-      <a class=dir href=#${prev}>../</a></br>
+      
+      ${prev}
       ${files.map(
         (file) =>
           html`${choose(file.type, [
