@@ -54,6 +54,10 @@ export class tc_filelist extends LitElement {
     a {
       color: var(--tc-link-color, blue);
     }
+    .mountpoint {
+      color: green;
+    }
+    .broken{color:red}
   `;
 
   load_data = () => {
@@ -64,9 +68,24 @@ export class tc_filelist extends LitElement {
       if (res.ok) {
         this.file_upload.style.display = "block";
         res.json().then((res) => {
-          this.files = res.files.sort((a, b) => {
+          var files = res.files.sort((a, b) => {
             return a["name"] > b["name"];
           });
+          var mountPoint = [];
+          files.forEach((item, index) => {
+            if (item.type === "mountpoint") {
+              mountPoint.push(item);
+              files.splice(index, 1);
+              return;
+            }
+          });
+          if (mountPoint.length) {
+            var i;
+            for (i in mountPoint) {
+              files.unshift(mountPoint[i]);
+            }
+          }
+          this.files = files;
         });
       } else {
         location.href = "#" + this.url.split("/").slice(0, -2).join("/");
@@ -131,6 +150,7 @@ export class tc_filelist extends LitElement {
         },
         显示隐藏文件: () => {
           this.showHidden = !this.showHidden;
+          localStorage.setItem("showHidden", this.showHidden);
         },
       };
       this.menu.show(e);
@@ -138,7 +158,11 @@ export class tc_filelist extends LitElement {
   };
   constructor() {
     super();
-    this.showHidden = false;
+    if (localStorage.getItem("showHidden") != null) {
+      this.showHidden = localStorage.getItem("showHidden");
+    } else {
+      this.showHidden = false;
+    }
     this.menu = new tc_contextmenu();
     var files;
     var renderJobs;
@@ -175,13 +199,17 @@ export class tc_filelist extends LitElement {
     if (!this.files) {
       return;
     }
-    var files = this.files.filter((file) => {
-      if (file.name.startsWith(".")) {
-        return this.showHidden;
-      }
+    if (!this.showHidden) {
+      var files = this.files.filter((file) => {
+        if (file.name.startsWith(".")) {
+          return false;
+        }
 
-      return true;
-    });
+        return true;
+      });
+    } else {
+      var files = this.files;
+    }
 
     var prev = this.url.split("/").slice(0, -2).join("/");
     return html`
@@ -198,9 +226,19 @@ export class tc_filelist extends LitElement {
                 html`<a id=file-${file.name}  tc-filename=${file.name} class=dir href=#${this.url}/${file.name}/>${file.name}/</a>`,
             ],
             [
+              "broken",
+              () =>
+                html`<a id=file-${file.name}  tc-filename=${file.name} class=broken href=#${this.url}/${file.name}/>${file.name}/</a>`,
+            ],
+            [
               "file",
               () =>
                 html`<a class=file id=file-${file.name} tc-filename=${file.name} href=/dav/${this.url}/${file.name} download=${file.name}>${file.name}</a>`,
+            ],
+            [
+              "mountpoint",
+              () =>
+                html`<a class=mountpoint id=file-${file.name} tc-filename=${file.name} href=#${this.url}/${file.name}>${file.name}</a>`,
             ],
           ])}</br>`
       )}</div>`;
