@@ -1,6 +1,7 @@
 import { LitElement, html, css } from "lit";
 import { choose } from "lit/directives/choose.js";
 
+
 export class tinycloud extends LitElement {
   static properties = { url: {} };
   constructor() {
@@ -175,7 +176,6 @@ export class tc_filelist extends LitElement {
   hasFile(filename) {
     var i;
     for (i in this.files) {
-
       if (this.files[i].name == filename) {
         return Number(i);
       }
@@ -189,18 +189,19 @@ export class tc_filelist extends LitElement {
       fileElement.style.background = "";
     }, 1000);
   }
-  uploadProgressCallback = (filename, finished) => {
+  uploadProgressCallback = (filename, finished,speed) => {
     var idx = this.hasFile(filename);
     if (!idx) {
       this.files.push({
         name: filename,
         type: "uploading",
         finished: finished,
+        speed:speed
       });
       return 0;
     }
     this.files[idx].finished = finished;
-    this.update()
+    this.update();
   };
   uploadFinishedCallback = (filename) => {
     var idx = this.hasFile(filename);
@@ -269,12 +270,12 @@ export class tc_filelist extends LitElement {
               "uploading",
               () =>
                 html`<a
-                  class="file"
-                  id="file-${file.name}"
-                  tc-filename=${file.name}
-                  style="background-image: linear-gradient(to right,gray ${file.finished}%, var(--tc-background) ${file.finished}%);"
-                  >${file.name}</a
-                >`,
+                    class="file"
+                    id="file-${file.name}"
+                    tc-filename=${file.name}
+                    style="background-image: linear-gradient(to right,gray ${file.finished}%, var(--tc-background) ${file.finished}%);"
+                    >${file.name}</a
+                  > - ${file.speed}`,
             ],
             [
               "mountpoint",
@@ -308,16 +309,42 @@ export class tc_fileupload extends LitElement {
   }
   upload_file(file) {
     var xhr = new XMLHttpRequest();
-    xhr.open("PUT", "/dav" + this.url + "/" + file.name+"/");
+    xhr.open("PUT", "/dav" + this.url + "/" + file.name + "/");
     xhr.onload = () => {
       if (xhr.status == 200) {
         this.uploadFinishedCallback(file.name);
       }
     };
+
     xhr.upload.onprogress = (e) => {
-      this.uploadProgressCallback(file.name,Math.round((e.loaded / e.total) * 100))
+      if (!oloaded){var oloaded=0}
+      var nt = new Date().getTime();//获取当前时间
+      var pertime = (nt-ot)/1000; //计算出上次调用该方法时到现在的时间差，单位为s
+      ot = new Date().getTime(); //重新赋值时间，用于下次计算
+      var perload = e.loaded - oloaded; //计算该分段上传的文件大小，单位b
+      var oloaded = e.loaded; //重新赋值已上传文件大小，用以下次计算
+
+      //上传速度计算
+      var speed = perload / pertime; //单位b/s
+      var bspeed = speed;
+      var units = "b/s"; //单位名称
+      if (speed / 1024 > 1) {
+        speed = speed / 1024;
+        units = "k/s";
+      }
+      if (speed / 1024 > 1) {
+        speed = speed / 1024;
+        units = "M/s";
+      }
+      speed = speed.toFixed(1);
+      this.uploadProgressCallback(
+        file.name,
+        Math.round((e.loaded / e.total) * 100),speed+units
+      );
       console.log(Math.round((e.loaded / e.total) * 100));
     };
+    var ot = new Date().getTime();
+    var oloaded = 0 //设置上传开始时间
     xhr.send(file);
     //    fetch("/dav" + this.url + "/" + file.name, {
     //     method: "PUT",
