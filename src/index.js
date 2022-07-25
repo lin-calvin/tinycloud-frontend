@@ -1,5 +1,4 @@
 import { LitElement, html, css } from "lit";
-import { map } from "lit/directives/map.js";
 import { choose } from "lit/directives/choose.js";
 
 export class tinycloud extends LitElement {
@@ -25,7 +24,8 @@ export class tinycloud extends LitElement {
     }
     var fileupload = new tc_fileupload();
     fileupload.url = this.url;
-    fileupload.uploadCallback = filelist.uploadCallback;
+    fileupload.uploadFinishedCallback = filelist.uploadFinishedCallback;
+    fileupload.uploadProgressCallback = filelist.uploadProgressCallback;
     filelist.file_upload = fileupload;
     filelist.load_data();
     return html` ${filelist}${fileupload}`;
@@ -167,11 +167,19 @@ export class tc_filelist extends LitElement {
     }
     this.menu = new tc_contextmenu();
     var files;
-    var renderJobs;
     this.url = "/";
 
     //this.load_data(); //fetch("/dav/"+"/"+"?json_mode=1",{  method: 'PROPFIND'}).then(res=>{res.json().then(res=>this.files=res.files)})
     //    this.renderRoot.addEventListener("contextmenu",this.contextmenu)
+  }
+  hasFile(filename) {
+    var i;
+    for (i in this.files) {
+
+      if (this.files[i].name == filename) {
+        return Number(i);
+      }
+    }
   }
   scrollToFile(file) {
     var fileElement = this.shadowRoot.getElementById("file-" + file);
@@ -181,15 +189,29 @@ export class tc_filelist extends LitElement {
       fileElement.style.background = "";
     }, 1000);
   }
-  uploadCallback = (filename) => {
-    this.files.push({
-      name: filename,
-      path: this.url + filename,
-      type: "file",
-    });
-    this.files.sort((a, b) => {
-      return a["name"] > b["name"];
-    });
+  uploadProgressCallback = (filename, finished) => {
+    var idx = this.hasFile(filename);
+    if (!idx) {
+      this.files.push({
+        name: filename,
+        type: "uploading",
+        finished: finished,
+      });
+      return 0;
+    }
+    this.files[idx].finished = finished;
+    this.update()
+  };
+  uploadFinishedCallback = (filename) => {
+    var idx = this.hasFile(filename);
+    if (idx != -1) {
+      this.files.pop(idx);
+      this.files.push({
+        name: filename,
+        path: this.url + filename,
+        type: "file",
+      });
+    }
     this.update();
     this.scrollToFile(filename);
   };
@@ -244,6 +266,17 @@ export class tc_filelist extends LitElement {
                 html`<a class=file id=file-${file.name} tc-filename=${file.name} href=/dav/${this.url}/${file.name} download=${file.name}>${file.name}</a>`,
             ],
             [
+              "uploading",
+              () =>
+                html`<a
+                  class="file"
+                  id="file-${file.name}"
+                  tc-filename=${file.name}
+                  style="background-image: linear-gradient(to right,grey ${file.finished}%, var(--tc-background) ${file.finished}%);"
+                  >${file.name}</a
+                >`,
+            ],
+            [
               "mountpoint",
               () =>
                 html`<a class=mountpoint id=file-${file.name} tc-filename=${file.name} href=#${this.url}/${file.name}>${file.name}</a>`,
@@ -254,7 +287,11 @@ export class tc_filelist extends LitElement {
 }
 
 export class tc_fileupload extends LitElement {
-  static properties = { url: {}, uploadCallback: {} };
+  static properties = {
+    url: {},
+    uploadFinishedCallback: {},
+    uploadProgressCallback: {},
+  };
   static styles = css`
     div {
       width: 20rem;
@@ -270,10 +307,22 @@ export class tc_fileupload extends LitElement {
     var input_form;
   }
   upload_file(file) {
-    fetch("/dav" + this.url + "/" + file.name, {
-      method: "PUT",
-      body: file,
-    }).then(() => this.uploadCallback(file.name));
+    var xhr = new XMLHttpRequest();
+    xhr.open("PUT", "/dav" + this.url + "/" + file.name+"/");
+    xhr.onload = () => {
+      if (xhr.status == 200) {
+        this.uploadFinishedCallback(file.name);
+      }
+    };
+    xhr.upload.onprogress = (e) => {
+      this.uploadProgressCallback(file.name,Math.round((e.loaded / e.total) * 100))
+      console.log(Math.round((e.loaded / e.total) * 100));
+    };
+    xhr.send(file);
+    //    fetch("/dav" + this.url + "/" + file.name, {
+    //     method: "PUT",
+    //    body: file,
+    // }).then(() => this.uploadCallback(file.name));
   }
 
   render() {
