@@ -1,12 +1,17 @@
-import { LitElement, html, css } from "lit";
-import { choose } from "lit/directives/choose.js";
+//import { LitElement, html, css } from "lit";
+//import { choose } from "lit/directives/choose.js";
 
+import { LitElement, html, css } from "https://cdn.jsdelivr.net/gh/lit/dist@2.2.8/all/lit-all.min.js";
+import { choose } from "https://cdn.jsdelivr.net/gh/lit/dist@2.2.8/all/lit-all.min.js";
+
+import {cleanPath} from "./utils.js"
 
 export class tinycloud extends LitElement {
-  static properties = { url: {} };
+  static properties = { url: {} ,routes:{}};
   constructor() {
     super();
-    this.url = location.hash.split("#")[1];
+    if (location.hash.split("#")[1]){
+    this.url = cleanPath(location.hash.split("#")[1]);}
     window.addEventListener(
       "hashchange",
       () => {
@@ -14,11 +19,12 @@ export class tinycloud extends LitElement {
       },
       false
     );
+    this.routes={"files":this.contentFiles}
   }
   hashchange() {
-    this.url = location.hash.split("#")[1];
+    this.url = cleanPath(location.hash.split("#")[1]||"/");
   }
-  content() {
+  contentFiles() {
     var filelist = new tc_filelist();
     if (this.url) {
       filelist.url = this.url;
@@ -33,12 +39,13 @@ export class tinycloud extends LitElement {
   }
   // Render the UI as a function of component state
   render() {
+    console.log(this.routes[this.url.split("/")[0]])
     return html`<body>
       <div id="header">
         <p>Tinycloud0.1</p>
         <hr />
       </div>
-      <div id="content">${this.content()}</div>
+      <div id="content">${this.contentFiles()}</div>
     </body>`;
   }
 }
@@ -107,7 +114,7 @@ export class tc_filelist extends LitElement {
     if (!confirm("删除文件")) {
       return 0;
     }
-    fetch("/dav" + this.url + filename + "?json_mode=1", {
+    fetch("/dav" + this.url + "/" + filename + "?json_mode=1", {
       method: "DELETE",
     }).then((res) => {
       if (res.ok) {
@@ -116,7 +123,7 @@ export class tc_filelist extends LitElement {
     });
   };
   mkdir = (dirname) => {
-    fetch("/dav" + this.url + dirname + "?json_mode=1", {
+    fetch("/dav" + this.url +"/"+ dirname + "?json_mode=1", {
       method: "MKCOL",
     }).then((res) => {
       if (res.ok) {
