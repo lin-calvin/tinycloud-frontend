@@ -1,8 +1,8 @@
-//import { LitElement, html, css } from "lit";
-//import { choose } from "lit/directives/choose.js";
+import { LitElement, html, css } from "lit";
+import { choose } from "lit/directives/choose.js";
 
-import { LitElement, html, css } from "https://cdn.jsdelivr.net/gh/lit/dist@2.2.8/all/lit-all.min.js";
-import { choose } from "https://cdn.jsdelivr.net/gh/lit/dist@2.2.8/all/lit-all.min.js";
+//import { LitElement, html, css } from "https://cdn.jsdelivr.net/gh/lit/dist@2.2.8/all/lit-all.min.js";
+//import { choose } from "https://cdn.jsdelivr.net/gh/lit/dist@2.2.8/all/lit-all.min.js";
 
 import {cleanPath} from "./utils.js"
 
@@ -12,6 +12,7 @@ export class tinycloud extends LitElement {
     super();
     if (location.hash.split("#")[1]){
     this.url = cleanPath(location.hash.split("#")[1]);}
+    else{this.url="/"}
     window.addEventListener(
       "hashchange",
       () => {
