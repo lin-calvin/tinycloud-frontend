@@ -19,17 +19,16 @@ export class tc_settings extends LitElement {
     });
   }
   save() {
-    var items = this.shadowRoot.querySelectorAll("input");//.configItem");
+    var items = this.shadowRoot.querySelectorAll("input"); //.configItem");
 
     for (var i of items.keys()) {
       var path = items[i].getAttribute("tc-config-tree").split("-");
       var value = items[i].value;
       var orig = this.content;
-      for (var n in path) {
+      for (var n in path.slice(0, -1)) {
         orig = orig[path[n]];
       }
-      console.log(typeof orig)
-      orig.replace(orig,value)
+      orig[path.slice(-1)] = value;
     }
   }
   render() {
@@ -60,3 +59,4 @@ export class tc_settings extends LitElement {
     }
   }
 }
+customElements.define("tc-settings", tc_settings);
