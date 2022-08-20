@@ -2,7 +2,7 @@ import { LitElement, html, css } from "lit";
 import { choose } from "lit/directives/choose.js";
 
 import { cleanPath } from "./utils.js";
-import { tc_contextmenu } from "./contextmenu.js"
+import { tc_contextmenu } from "./contextmenu.js";
 export class tc_filelist extends LitElement {
   static properties = {
     files: {},
@@ -12,6 +12,7 @@ export class tc_filelist extends LitElement {
     file_upload: {},
     showHidden: {},
     apiBase: {},
+    readOnly: {},
   };
   static styles = css`
     a {
@@ -92,32 +93,36 @@ export class tc_filelist extends LitElement {
       var filename = e.target.getAttribute("tc-filename");
       this.menu.menu = {
         打开: () => {
-          window.open("/dav" + this.url + filename);
+          window.open("/dav" + this.url +"/"+ filename);
         },
         下载文件: () => {
           var m = document.createEvent("MouseEvents");
           m.initEvent("click", true, true);
           e.originalTarget.dispatchEvent(m);
         },
-        删除: () => {
-          this.delete_file(filename);
-        },
       };
+      if (!this.readOnly) {
+        this.menu.menu["删除"] = () => {
+          this.delete_file(filename);
+        };
+      }
       this.menu.show(e);
     } else {
       this.menu.menu = {
-        新建文件夹: () => {
-          name = prompt("文件夹名");
-          this.mkdir(name);
-        },
-        上传文件: () => {
-          this.file_upload.input_form.click();
-        },
         显示隐藏文件: () => {
           this.showHidden = !this.showHidden;
           localStorage.setItem("showHidden", this.showHidden);
         },
       };
+      if (!this.readOnly) {
+        this.menu.menu["新建文件夹"] = () => {
+          name = prompt("文件夹名");
+          this.mkdir(name);
+        };
+        this.menu.menu["上传文件"] = () => {
+          this.file_upload.input_form.click();
+        };
+      }
       this.menu.show(e);
     }
   };
@@ -132,8 +137,7 @@ export class tc_filelist extends LitElement {
     var files;
     this.url = "/";
     this.apiBase = "dav/";
-    //this.load_data(); //fetch('/dav/'+'/'+'?json_mode=1',{  method: 'PROPFIND'}).then(res=>{res.json().then(res=>this.files=res.files)})
-    //    this.renderRoot.addEventListener('contextmenu',this.contextmenu)
+    this.readOnly = false;
   }
   hasFile(filename) {
     var i;
@@ -352,7 +356,6 @@ export class tc_fileupload extends LitElement {
     return html`${this.drop}${this.input_form}`;
   }
 }
-
 
 customElements.define("tc-filelist", tc_filelist);
 customElements.define("tc-fileupload", tc_fileupload);

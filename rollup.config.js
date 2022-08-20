@@ -11,7 +11,7 @@ export default {
     // Entry point for application build; can specify a glob to build multiple
     // HTML files for non-SPA app
     html({
-      input: "src/index.html",
+      input: ["src/index.html","src/share.html"],
       format: "esm",
       publicPath: "static/",
     }),
