@@ -13,7 +13,7 @@ export default {
     html({
       input: ["src/index.html","src/share.html"],
       format: "esm",
-      publicPath: "static/",
+      publicPath: "/static/",
     }),
     // Resolve bare module specifiers to relative paths
     resolve(),

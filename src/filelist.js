@@ -27,12 +27,16 @@ export class tc_filelist extends LitElement {
   `;
 
   load_data = () => {
-    this.file_upload.style.display = "none";
-    return fetch("/dav" + this.url + "?json_mode=1", {
+    if (this.file_upload) {
+      this.file_upload.style.display = "none";
+    }
+    return fetch(this.apiBase + this.url + "?json_mode=1", {
       method: "PROPFIND",
     }).then((res) => {
       if (res.ok) {
-        this.file_upload.style.display = "block";
+        if (this.file_upload) {
+          this.file_upload.style.display = "block";
+        }
         res.json().then((res) => {
           var files = res.files.sort((a, b) => {
             return a["name"] > b["name"];
@@ -70,7 +74,7 @@ export class tc_filelist extends LitElement {
     if (!confirm("删除文件")) {
       return 0;
     }
-    fetch("/dav" + this.url + "/" + filename + "?json_mode=1", {
+    fetch(this.apiBase + this.url + "/" + filename + "?json_mode=1", {
       method: "DELETE",
     }).then((res) => {
       if (res.ok) {
@@ -79,7 +83,7 @@ export class tc_filelist extends LitElement {
     });
   };
   mkdir = (dirname) => {
-    fetch("/dav" + this.url + "/" + dirname + "?json_mode=1", {
+    fetch(this.apiBase + this.url + "/" + dirname + "?json_mode=1", {
       method: "MKCOL",
     }).then((res) => {
       if (res.ok) {
@@ -93,7 +97,7 @@ export class tc_filelist extends LitElement {
       var filename = e.target.getAttribute("tc-filename");
       this.menu.menu = {
         打开: () => {
-          window.open("/dav" + this.url +"/"+ filename);
+          window.open(this.apiBase + this.url + "/" + filename);
         },
         下载文件: () => {
           var m = document.createEvent("MouseEvents");
@@ -119,9 +123,11 @@ export class tc_filelist extends LitElement {
           name = prompt("文件夹名");
           this.mkdir(name);
         };
-        this.menu.menu["上传文件"] = () => {
-          this.file_upload.input_form.click();
-        };
+        if (this.file_upload) {
+          this.menu.menu["上传文件"] = () => {
+            this.file_upload.input_form.click();
+          };
+        }
       }
       this.menu.show(e);
     }
@@ -231,7 +237,7 @@ export class tc_filelist extends LitElement {
             [
               "file",
               () =>
-                html`<a class=file id=file-${file.name} tc-filename=${file.name} href=/dav/${this.urlRoot}/${this.url}/${file.name} download=${file.name}>${file.name}</a>`,
+                html`<a class=file id=file-${file.name} tc-filename=${file.name} href=${this.apiBase}/${this.urlRoot}/${this.url}/${file.name} download=${file.name}>${file.name}</a>`,
             ],
             [
               "uploading",
@@ -261,6 +267,7 @@ export class tc_fileupload extends LitElement {
     uploadFinishedCallback: {},
     uploadProgressCallback: {},
     ol: {},
+    apiBase: {},
   };
   static styles = css`
     div {
@@ -274,12 +281,13 @@ export class tc_fileupload extends LitElement {
   `;
   constructor() {
     super();
+    this.apiBase = "dav/";
     var input_form;
   }
 
   upload_file(file) {
     var xhr = new XMLHttpRequest();
-    xhr.open("PUT", "/dav" + this.url + "/" + file.name + "/");
+    xhr.open("PUT", this.apiBase + this.url + "/" + file.name + "/");
     xhr.onload = () => {
       if (xhr.status == 200) {
         this.uploadFinishedCallback(file.name);

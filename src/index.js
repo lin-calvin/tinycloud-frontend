@@ -6,7 +6,7 @@ import { choose } from "lit/directives/choose.js";
 
 import { cleanPath } from "./utils.js";
 import { tc_settings } from "./settings.js";
-import { tc_filelist,tc_fileupload } from "./filelist.js";
+import { tc_filelist, tc_fileupload } from "./filelist.js";
 export class tinycloud extends LitElement {
   static properties = { url: {}, routes: {} };
   static styles = css`
@@ -52,7 +52,7 @@ export class tinycloud extends LitElement {
     fileupload.url = url;
     fileupload.uploadFinishedCallback = filelist.uploadFinishedCallback;
     fileupload.uploadProgressCallback = filelist.uploadProgressCallback;
-    filelist.fi le_upload = fileupload;
+    filelist.file_upload = fileupload;
     filelist.load_data();
     return html` ${filelist}${fileupload}`;
   };
