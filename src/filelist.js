@@ -1,6 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { choose } from "lit/directives/choose.js";
-import {msg, updateWhenLocaleChanges} from '@lit/localize';
+import { msg, updateWhenLocaleChanges } from "@lit/localize";
 
 import { cleanPath } from "./utils.js";
 import { tc_contextmenu } from "./contextmenu.js";

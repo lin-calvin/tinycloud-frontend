@@ -1,7 +1,8 @@
-import {configureLocalization} from '@lit/localize';
+import { configureLocalization } from "@lit/localize";
 
-export const {getLocale, setLocale} = configureLocalization({
-  sourceLocale:'en',
-  targetLocales:['en','zh-Hans'],
+export const supportedLocales = ["en", "zh-CN"];
+export const { getLocale, setLocale } = configureLocalization({
+  sourceLocale: "en",
+  targetLocales: supportedLocales,
   loadLocale: (locale) => import(`/static/locale/${locale}.js`),
 });

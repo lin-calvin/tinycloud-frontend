@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-<file target-language="zh-Hans" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+<file target-language="zh-CN" source-language="en" original="lit-localize-inputs" datatype="plaintext">
 <body>
 <trans-unit id="s9537bfad097c928d">
   <source>No such file or directory</source>
@@ -32,11 +32,23 @@
 </trans-unit>
 <trans-unit id="s71973c77591ace07">
   <source>New folder</source>
- <target>新建文件夹</target>
+  <target>新建文件夹</target>
 </trans-unit>
 <trans-unit id="s24409e1129fefde2">
   <source>Upload file</source>
   <target>上传文件</target>
+</trans-unit>
+<trans-unit id="s803ce7e1a2294d50">
+  <source>Files</source>
+  <target>文件</target>
+</trans-unit>
+<trans-unit id="s9d8b8aa2b404c2c8">
+  <source>Settings</source>
+  <target>设置</target>
+</trans-unit>
+<trans-unit id="sf072c482c213c6f1">
+  <source>Shares</source>
+  <target>共享</target>
 </trans-unit>
 </body>
 </file>

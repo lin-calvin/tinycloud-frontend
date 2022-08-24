@@ -1,14 +1,14 @@
 import { LitElement, html, css } from "lit";
 import { choose } from "lit/directives/choose.js";
-import {getLocale, setLocale}  from './locale.js'
-
+import { getLocale, setLocale, supportedLocales } from "./locale.js";
+import { msg, updateWhenLocaleChanges } from "@lit/localize";
 //import { LitElement, html, css } from 'https://cdn.jsdelivr.net/gh/lit/dist@2.2.8/all/lit-all.min.js';
 //import { choose } from 'https://cdn.jsdelivr.net/gh/lit/dist@2.2.8/all/lit-all.min.js';
 
 import { cleanPath } from "./utils.js";
 import { tc_settings } from "./settings.js";
 import { tc_filelist, tc_fileupload } from "./filelist.js";
-import { tc_shares} from "./shares.js"
+import { tc_shares } from "./shares.js";
 export class tinycloud extends LitElement {
   static properties = { url: {}, routes: {} };
   static styles = css`
@@ -18,7 +18,15 @@ export class tinycloud extends LitElement {
   `;
   constructor() {
     super();
-    setLocale('zh-Hans')
+    window.tinycloud = this;
+    window.setLocale = setLocale;
+    var browserLang = navigator.language;
+    if (supportedLocales.includes(browserLang)) {
+      setLocale(browserLang);
+    } else {
+      setLocale("en");
+    }
+    updateWhenLocaleChanges(this);
     if (location.hash.split("#")[1]) {
       this.url = cleanPath(location.hash.split("#")[1]);
     } else {
@@ -32,9 +40,9 @@ export class tinycloud extends LitElement {
       false
     );
     this.routes = {
-      files: [this.contentFiles, "Files"],
-      settings: [this.contentSettings, "Settings"],
-      shares: [this.contentShares, "Shares"],
+      files: [this.contentFiles, msg("Files")],
+      settings: [this.contentSettings, msg("Settings")],
+      shares: [this.contentShares, msg("Shares")],
     };
   }
   hashchange() {
@@ -45,15 +53,15 @@ export class tinycloud extends LitElement {
     settings.loadData();
     return html`${settings}`;
   };
-  contentShares=()=>{
-    var shares=new tc_shares()
-    shares.loadData()
-    return html`${shares}`
-  }
+  contentShares = () => {
+    var shares = new tc_shares();
+    shares.loadData();
+    return html`${shares}`;
+  };
   contentFiles = () => {
     var url = "/" + this.url.split("/").slice(2).join("/");
     var urlRoot = this.url.split("/").slice(0, 2).join("/");
-    console.log(urlRoot);
+
     var filelist = new tc_filelist();
     filelist.url = url;
     filelist.urlRoot = urlRoot;
@@ -80,12 +88,13 @@ export class tinycloud extends LitElement {
       <div id="header">
         Tinycloud0.1
         <div align="right">
-          ${menu.map((x) => html`<a href="#${x[2]}">${x[0]}</a>&nbsp`)}
+          ${menu.map((x) => html`<a href="#${x[2]}">${msg(x[0])}</a>&nbsp`)}
         </div>
         <hr />
       </div>
       <div id="content">${contFunc()}</div>
     </body>`;
+    //Use msg() two times is ugly but work and can let me dont use the callback
   }
 }
 

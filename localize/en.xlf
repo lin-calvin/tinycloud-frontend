@@ -29,6 +29,15 @@
 <trans-unit id="s24409e1129fefde2">
   <source>Upload file</source>
 </trans-unit>
+<trans-unit id="s803ce7e1a2294d50">
+  <source>Files</source>
+</trans-unit>
+<trans-unit id="s9d8b8aa2b404c2c8">
+  <source>Settings</source>
+</trans-unit>
+<trans-unit id="sf072c482c213c6f1">
+  <source>Shares</source>
+</trans-unit>
 </body>
 </file>
 </xliff>

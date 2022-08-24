@@ -1,12 +1,12 @@
 import { LitElement, html, css } from "lit";
-export class tc_shares extends LitElement{
+export class tc_shares extends LitElement {
   static properties = { shares: {} };
-    static styles = css`
+  static styles = css`
     a {
       color: var(--tc-link-color, blue);
       text-decoration: none;
     }
-  `
+  `;
   loadData() {
     fetch("/api/shares").then((resp) => {
       resp.json().then((res) => {
@@ -14,19 +14,21 @@ export class tc_shares extends LitElement{
       });
     });
   }
-  render(){
-    if(!this.shares){
-      return
+  render() {
+    if (!this.shares) {
+      return;
     }
-   var  h=[]
-    for (var i in this.shares){
-      var path=this.shares[i].path
-      if (path==""){
-        path="/"
+    var h = [];
+    for (var i in this.shares) {
+      var path = this.shares[i].path;
+      if (path == "") {
+        path = "/";
       }
-      h.push(html`<a href=/shares/${i}> ${path}&nbsp|&nbspUser:${this.shares[i].username}</a><button>del</button></br>`)
+      h.push(
+        html`<a href=/shares/${i}>${location.origin}/shares/${i}</a>&nbspPath: ${path}&nbsp|&nbspUser:${this.shares[i].username}<button>del</button></br>`
+      );
     }
-    return html`${h}<button>new</button>`
+    return html`${h}<button>new</button>`;
   }
 }
 
