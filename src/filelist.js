@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { choose } from "lit/directives/choose.js";
+import {msg, updateWhenLocaleChanges} from '@lit/localize';
 
 import { cleanPath } from "./utils.js";
 import { tc_contextmenu } from "./contextmenu.js";
@@ -26,7 +27,7 @@ export class tc_filelist extends LitElement {
     }
   `;
 
-  load_data = () => {
+  loadData = () => {
     if (this.file_upload) {
       this.file_upload.style.display = "none";
     }
@@ -61,24 +62,24 @@ export class tc_filelist extends LitElement {
         location.href = "#" + this.url.split("/").slice(0, -2).join("/");
         switch (res.status) {
           case 404:
-            alert("文件夹不存在");
+            alert(msg("No such file or directory"));
             break;
           case 403:
-            alert("无权访问");
+            alert(msg("Permission denied"));
             break;
         }
       }
     });
   };
   delete_file = (filename) => {
-    if (!confirm("删除文件")) {
+    if (!confirm(msg("Delete file?"))) {
       return 0;
     }
     fetch(this.apiBase + this.url + "/" + filename + "?json_mode=1", {
       method: "DELETE",
     }).then((res) => {
       if (res.ok) {
-        this.load_data();
+        this.loadData();
       }
     });
   };
@@ -87,7 +88,7 @@ export class tc_filelist extends LitElement {
       method: "MKCOL",
     }).then((res) => {
       if (res.ok) {
-        this.load_data();
+        this.loadData();
       }
     });
   };
@@ -96,35 +97,35 @@ export class tc_filelist extends LitElement {
       e.preventDefault();
       var filename = e.target.getAttribute("tc-filename");
       this.menu.menu = {
-        打开: () => {
+        [msg("Open file")]: () => {
           window.open(this.apiBase + this.url + "/" + filename);
         },
-        下载文件: () => {
+        [msg("Download file")]: () => {
           var m = document.createEvent("MouseEvents");
           m.initEvent("click", true, true);
           e.originalTarget.dispatchEvent(m);
         },
       };
       if (!this.readOnly) {
-        this.menu.menu["删除"] = () => {
+        this.menu.menu[msg("Delete file")] = () => {
           this.delete_file(filename);
         };
       }
       this.menu.show(e);
     } else {
       this.menu.menu = {
-        显示隐藏文件: () => {
+        [msg("Show hidden files")]: () => {
           this.showHidden = !this.showHidden;
           localStorage.setItem("showHidden", this.showHidden);
         },
       };
       if (!this.readOnly) {
-        this.menu.menu["新建文件夹"] = () => {
+        this.menu.menu[msg("New folder")] = () => {
           name = prompt("文件夹名");
           this.mkdir(name);
         };
         if (this.file_upload) {
-          this.menu.menu["上传文件"] = () => {
+          this.menu.menu[msg("Upload file")] = () => {
             this.file_upload.input_form.click();
           };
         }
@@ -134,6 +135,7 @@ export class tc_filelist extends LitElement {
   };
   constructor() {
     super();
+    updateWhenLocaleChanges(this);
     if (localStorage.getItem("showHidden") != null) {
       this.showHidden = localStorage.getItem("showHidden");
     } else {

@@ -31,11 +31,8 @@ export default {
       warnings: true,
     }),*/
     // Print bundle summary
-    summary(),
     // Optional: copy any static assets to build directory
-    copy({
-      patterns: ["images/**/*"],
-    }),
+    summary(),	  
   ],
   output: {
     dir: "build",

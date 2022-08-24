@@ -30,7 +30,7 @@ export class tc_share extends LitElement {
     filelist.readOnly = this.info.mode == "r";
     filelist.apiBase = "/api/shares/dav/" + this.id;
     filelist.url = "/" + this.url;
-    filelist.load_data();
+    filelist.loadData();
     return html`${filelist}`;
   }
 }

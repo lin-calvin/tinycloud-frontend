@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+<file target-language="zh-Hans" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+<body>
+<trans-unit id="s9537bfad097c928d">
+  <source>No such file or directory</source>
+  <target>没有这个文件或目录</target>
+</trans-unit>
+<trans-unit id="sd9f98b1e0625d3a5">
+  <source>Permission denied</source>
+  <target>无权访问</target>
+</trans-unit>
+<trans-unit id="s186d1e56974e3665">
+  <source>Delete file?</source>
+  <target>确认删除?</target>
+</trans-unit>
+<trans-unit id="s2aaf1446fd477405">
+  <source>Open file</source>
+  <target>打开文件</target>
+</trans-unit>
+<trans-unit id="s05edf371f15f3715">
+  <source>Download file</source>
+  <target>下载文件</target>
+</trans-unit>
+<trans-unit id="s997be255884aebb8">
+  <source>Delete file</source>
+  <target>删除文件</target>
+</trans-unit>
+<trans-unit id="seea3019d4ea20f17">
+  <source>Show hidden files</source>
+  <target>显示隐藏文件</target>
+</trans-unit>
+<trans-unit id="s71973c77591ace07">
+  <source>New folder</source>
+ <target>新建文件夹</target>
+</trans-unit>
+<trans-unit id="s24409e1129fefde2">
+  <source>Upload file</source>
+  <target>上传文件</target>
+</trans-unit>
+</body>
+</file>
+</xliff>

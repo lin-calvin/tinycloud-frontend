@@ -11,7 +11,7 @@ export class tc_settings extends LitElement {
     super();
   }
 
-  load_data() {
+  loadData() {
     fetch("/api/confmgr").then((resp) => {
       resp.json().then((res) => {
         this.content = res;

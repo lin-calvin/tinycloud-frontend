@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { choose } from "lit/directives/choose.js";
+import {getLocale, setLocale}  from './locale.js'
 
 //import { LitElement, html, css } from 'https://cdn.jsdelivr.net/gh/lit/dist@2.2.8/all/lit-all.min.js';
 //import { choose } from 'https://cdn.jsdelivr.net/gh/lit/dist@2.2.8/all/lit-all.min.js';
@@ -7,6 +8,7 @@ import { choose } from "lit/directives/choose.js";
 import { cleanPath } from "./utils.js";
 import { tc_settings } from "./settings.js";
 import { tc_filelist, tc_fileupload } from "./filelist.js";
+import { tc_shares} from "./shares.js"
 export class tinycloud extends LitElement {
   static properties = { url: {}, routes: {} };
   static styles = css`
@@ -16,6 +18,7 @@ export class tinycloud extends LitElement {
   `;
   constructor() {
     super();
+    setLocale('zh-Hans')
     if (location.hash.split("#")[1]) {
       this.url = cleanPath(location.hash.split("#")[1]);
     } else {
@@ -31,6 +34,7 @@ export class tinycloud extends LitElement {
     this.routes = {
       files: [this.contentFiles, "Files"],
       settings: [this.contentSettings, "Settings"],
+      shares: [this.contentShares, "Shares"],
     };
   }
   hashchange() {
@@ -38,9 +42,14 @@ export class tinycloud extends LitElement {
   }
   contentSettings = () => {
     var settings = new tc_settings();
-    settings.load_data();
+    settings.loadData();
     return html`${settings}`;
   };
+  contentShares=()=>{
+    var shares=new tc_shares()
+    shares.loadData()
+    return html`${shares}`
+  }
   contentFiles = () => {
     var url = "/" + this.url.split("/").slice(2).join("/");
     var urlRoot = this.url.split("/").slice(0, 2).join("/");
@@ -53,7 +62,7 @@ export class tinycloud extends LitElement {
     fileupload.uploadFinishedCallback = filelist.uploadFinishedCallback;
     fileupload.uploadProgressCallback = filelist.uploadProgressCallback;
     filelist.file_upload = fileupload;
-    filelist.load_data();
+    filelist.loadData();
     return html` ${filelist}${fileupload}`;
   };
   // Render the UI as a function of component state
