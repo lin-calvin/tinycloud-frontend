@@ -8,7 +8,7 @@ export const { getLocale, setLocale } = configureLocalization({
 });
 
 export const decideLocale=(localeName)=>{
-  if (supppoedLocales.includes(localeName)){
+  if (suppprtedLocales.includes(localeName)){
     return localeName
   }
   if (localeName.startsWith('en')){
