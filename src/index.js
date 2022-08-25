@@ -1,6 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { choose } from "lit/directives/choose.js";
-import { getLocale, setLocale, supportedLocales } from "./locale.js";
+import { getLocale, setLocale, decideLocale } from "./locale.js";
 import { msg, updateWhenLocaleChanges } from "@lit/localize";
 //import { LitElement, html, css } from 'https://cdn.jsdelivr.net/gh/lit/dist@2.2.8/all/lit-all.min.js';
 //import { choose } from 'https://cdn.jsdelivr.net/gh/lit/dist@2.2.8/all/lit-all.min.js';
@@ -21,11 +21,7 @@ export class tinycloud extends LitElement {
     window.tinycloud = this;
     window.setLocale = setLocale;
     var browserLang = navigator.language;
-    if (supportedLocales.includes(browserLang)) {
-      setLocale(browserLang);
-    } else {
-      setLocale("en");
-    }
+    setLocale(decideLocale(browserLang)||en);
     updateWhenLocaleChanges(this);
     if (location.hash.split("#")[1]) {
       this.url = cleanPath(location.hash.split("#")[1]);

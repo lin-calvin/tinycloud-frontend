@@ -6,3 +6,16 @@ export const { getLocale, setLocale } = configureLocalization({
   targetLocales: supportedLocales,
   loadLocale: (locale) => import(`/static/locale/${locale}.js`),
 });
+
+export const decideLocale=(localeName)=>{
+  if (supppoedLocales.includes(localeName)){
+    return localeName
+  }
+  if (localeName.startsWith('en')){
+    return 'en'
+  }
+  if (localeName.startsWith('zh')){
+    return 'zh-CN'
+  }
+  return undefined
+}
