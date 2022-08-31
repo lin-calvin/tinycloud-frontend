@@ -9,10 +9,11 @@ export class tc_settings extends LitElement {
   `;
   constructor() {
     super();
+    this.token=localStorage["token"]
   }
 
   loadData() {
-    fetch("/api/confmgr").then((resp) => {
+    fetch("/api/confmgr",{headers:{"Authorization":"Bearer "+this.token}}).then((resp) => {
       resp.json().then((res) => {
         this.content = res;
       });

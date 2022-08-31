@@ -7,8 +7,12 @@ export class tc_shares extends LitElement {
       text-decoration: none;
     }
   `;
+  constructor(){
+  super()
+  this.token=localStorage["token"]
+}
   loadData() {
-    fetch("/api/shares").then((resp) => {
+    fetch("/api/shares",{headers:{"Authorization":"Bearer "+this.token}}).then((resp) => {
       resp.json().then((res) => {
         this.shares = res;
       });
@@ -28,8 +32,10 @@ export class tc_shares extends LitElement {
         html`<a href=/shares/${i}>${location.origin}/shares/${i}</a>&nbspPath: ${path}&nbsp|&nbspUser:${this.shares[i].username}<button>del</button></br>`
       );
     }
-    return html`${h}<button>new</button>`;
+    return html`${h}`;
   }
 }
-
+export class tc_newshare extends LitElement {
+  // TODO
+}
 customElements.define("tc-shares", tc_shares);

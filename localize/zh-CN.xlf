@@ -38,6 +38,18 @@
   <source>Upload file</source>
   <target>上传文件</target>
 </trans-unit>
+<trans-unit id="s03f42eea72154959">
+  <source>Username</source>
+  <target>用户名</target>
+</trans-unit>
+<trans-unit id="sf6e1665c7022a1f8">
+  <source>Password</source>
+  <target>密码</target>
+</trans-unit>
+<trans-unit id="sc8da3cc71de63832">
+  <source>Login</source>
+  <target>登录</target>
+</trans-unit>
 <trans-unit id="s803ce7e1a2294d50">
   <source>Files</source>
   <target>文件</target>
@@ -49,6 +61,10 @@
 <trans-unit id="sf072c482c213c6f1">
   <source>Shares</source>
   <target>共享</target>
+</trans-unit>
+<trans-unit id="s67749057edb2586b">
+  <source>Logout</source>
+  <target>登出</target>
 </trans-unit>
 </body>
 </file>

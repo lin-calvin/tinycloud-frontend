@@ -7,15 +7,15 @@ export const { getLocale, setLocale } = configureLocalization({
   loadLocale: (locale) => import(`/static/locale/${locale}.js`),
 });
 
-export const decideLocale=(localeName)=>{
-  if (supportedLocales.includes(localeName)){
-    return localeName
+export const decideLocale = (localeName) => {
+  if (supportedLocales.includes(localeName)) {
+    return localeName;
   }
-  if (localeName.startsWith('en')){
-    return 'en'
+  if (localeName.startsWith("en")) {
+    return "en";
   }
-  if (localeName.startsWith('zh')){
-    return 'zh-CN'
+  if (localeName.startsWith("zh")) {
+    return "zh-CN";
   }
-  return undefined
-}
+  return undefined;
+};

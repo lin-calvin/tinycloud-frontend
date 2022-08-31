@@ -5,10 +5,12 @@ import { msg, updateWhenLocaleChanges } from "@lit/localize";
 //import { LitElement, html, css } from 'https://cdn.jsdelivr.net/gh/lit/dist@2.2.8/all/lit-all.min.js';
 //import { choose } from 'https://cdn.jsdelivr.net/gh/lit/dist@2.2.8/all/lit-all.min.js';
 
-import { cleanPath } from "./utils.js";
+import { cleanPath, getCookie, setCookie } from "./utils.js";
 import { tc_settings } from "./settings.js";
 import { tc_filelist, tc_fileupload } from "./filelist.js";
 import { tc_shares } from "./shares.js";
+import { tc_login } from "./login.js";
+
 export class tinycloud extends LitElement {
   static properties = { url: {}, routes: {} };
   static styles = css`
@@ -21,8 +23,9 @@ export class tinycloud extends LitElement {
     window.tinycloud = this;
     window.setLocale = setLocale;
     var browserLang = navigator.language;
-    setLocale(decideLocale(browserLang)||en);
     updateWhenLocaleChanges(this);
+    setLocale(decideLocale(browserLang) || en);
+
     if (location.hash.split("#")[1]) {
       this.url = cleanPath(location.hash.split("#")[1]);
     } else {
@@ -36,9 +39,10 @@ export class tinycloud extends LitElement {
       false
     );
     this.routes = {
-      files: [this.contentFiles, msg("Files")],
-      settings: [this.contentSettings, msg("Settings")],
-      shares: [this.contentShares, msg("Shares")],
+      files: [this.contentFiles, () => msg("Files")],
+      settings: [this.contentSettings, () => msg("Settings")],
+      shares: [this.contentShares, () => msg("Shares")],
+      logout: [()=>{delete localStorage["token"];location.hash="";this.update()},()=>msg("Logout")]
     };
   }
   hashchange() {
@@ -72,25 +76,35 @@ export class tinycloud extends LitElement {
   // Render the UI as a function of component state
   render() {
     //console.log(this.url.split('/')[])
-    var menu = [];
-    for (var i in this.routes) {
-      menu.push([this.routes[i][1], this.routes[i][0], i]);
+
+    if (!localStorage["token"]) {
+      console.log(1)
+      var login = true;
+      var contFunc = () => {
+        return new tc_login();
+      };
     }
-    if (this.url == "/") {
+    var menu = [];
+    if (!login) {
+      setCookie("token",localStorage["token"],-1);
+            if (this.url == "/") {
       location.hash = "/files";
     }
-    var contFunc = this.routes[this.url.split("/")[1]][0];
+      for (var i in this.routes) {
+        menu.push([this.routes[i][1], this.routes[i][0], i]);
+      }
+      var contFunc=this.routes[this.url.split("/")[1]][0];
+    }
     return html`<body>
       <div id="header">
         Tinycloud0.1
         <div align="right">
-          ${menu.map((x) => html`<a href="#${x[2]}">${msg(x[0])}</a>&nbsp`)}
+          ${menu.map((x) => html`<a href="#${x[2]}">${x[0]()}</a>&nbsp`)}
         </div>
         <hr />
       </div>
       <div id="content">${contFunc()}</div>
     </body>`;
-    //Use msg() two times is ugly but work and can let me dont use the callback
   }
 }
 

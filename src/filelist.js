@@ -14,6 +14,7 @@ export class tc_filelist extends LitElement {
     showHidden: {},
     apiBase: {},
     readOnly: {},
+    token: {}
   };
   static styles = css`
     a {
@@ -32,7 +33,7 @@ export class tc_filelist extends LitElement {
       this.file_upload.style.display = "none";
     }
     return fetch(this.apiBase + this.url + "?json_mode=1", {
-      method: "PROPFIND",
+      method: "PROPFIND",headers:{"Authorization":"Bearer "+this.token}
     }).then((res) => {
       if (res.ok) {
         if (this.file_upload) {
@@ -76,7 +77,7 @@ export class tc_filelist extends LitElement {
       return 0;
     }
     fetch(this.apiBase + this.url + "/" + filename + "?json_mode=1", {
-      method: "DELETE",
+      method: "DELETE",headers:{"Authorization":"Bearer "+this.token}
     }).then((res) => {
       if (res.ok) {
         this.loadData();
@@ -85,7 +86,7 @@ export class tc_filelist extends LitElement {
   };
   mkdir = (dirname) => {
     fetch(this.apiBase + this.url + "/" + dirname + "?json_mode=1", {
-      method: "MKCOL",
+      method: "MKCOL",headers:{"Authorization":"Bearer "+this.token}
     }).then((res) => {
       if (res.ok) {
         this.loadData();
@@ -144,8 +145,10 @@ export class tc_filelist extends LitElement {
     this.menu = new tc_contextmenu();
     var files;
     this.url = "/";
-    this.apiBase = "dav/";
+    this.apiBase = "/dav/";
     this.readOnly = false;
+    this.token=localStorage["token"]
+
   }
   hasFile(filename) {
     var i;
@@ -239,7 +242,7 @@ export class tc_filelist extends LitElement {
             [
               "file",
               () =>
-                html`<a class=file id=file-${file.name} tc-filename=${file.name} href=${this.apiBase}/${this.urlRoot}/${this.url}/${file.name} download=${file.name}>${file.name}</a>`,
+                html`<a class=file id=file-${file.name} tc-filename=${file.name} href=${this.apiBase}/${this.url}/${file.name} download=${file.name}>${file.name}</a>`,
             ],
             [
               "uploading",
