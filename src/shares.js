@@ -7,12 +7,12 @@ export class tc_shares extends LitElement {
       text-decoration: none;
     }
   `;
-  constructor(){
-  super()
-  this.token=localStorage["token"]
-}
+  constructor() {
+    super();
+    this.token = localStorage["token"];
+  }
   loadData() {
-    fetch("/api/shares",{headers:{"Authorization":"Bearer "+this.token}}).then((resp) => {
+    fetch("/api/shares").then((resp) => {
       resp.json().then((res) => {
         this.shares = res;
       });

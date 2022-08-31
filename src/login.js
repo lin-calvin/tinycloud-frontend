@@ -1,6 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { msg, updateWhenLocaleChanges } from "@lit/localize";
-import {setCookie} from './utils.js'
+import { setCookie } from "./utils.js";
 export class tc_login extends LitElement {
   static properties = {};
   constructor() {
@@ -8,7 +8,7 @@ export class tc_login extends LitElement {
     updateWhenLocaleChanges(this);
   }
   login() {
-    setCookie("token","",0)
+    setCookie("token", "", 0);
     var username = this.shadowRoot.getElementById("username").value;
     var passwd = this.shadowRoot.getElementById("passwd").value;
     fetch("/api/login", {
@@ -18,13 +18,19 @@ export class tc_login extends LitElement {
       res.json().then((res) => {
         if (res.status == 200) {
           localStorage.token = res.token;
-          window.tinycloud.update()
+          window.tinycloud.update();
         }
       });
     });
   }
   render() {
-    return html`<center><label for="username">${msg('Username')}:</label><input tyep="text" id="username" /></br><label for="passwd">${msg('Password')}:</label><input type="password" id="passwd" /></br><button @click=${this.login}>${msg("Login")}</button></center>`;
+    return html`<center><label for="username">${msg(
+      "Username"
+    )}:</label><input tyep="text" id="username" /></br><label for="passwd">${msg(
+      "Password"
+    )}:</label><input type="password" id="passwd" /></br><button @click=${
+      this.login
+    }>${msg("Login")}</button></center>`;
   }
 }
 customElements.define("tc-login", tc_login);

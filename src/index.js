@@ -42,7 +42,14 @@ export class tinycloud extends LitElement {
       files: [this.contentFiles, () => msg("Files")],
       settings: [this.contentSettings, () => msg("Settings")],
       shares: [this.contentShares, () => msg("Shares")],
-      logout: [()=>{delete localStorage["token"];location.hash="";this.update()},()=>msg("Logout")]
+      logout: [
+        () => {
+          delete localStorage["token"];
+          location.hash = "";
+          this.update();
+        },
+        () => msg("Logout"),
+      ],
     };
   }
   hashchange() {
@@ -78,7 +85,7 @@ export class tinycloud extends LitElement {
     //console.log(this.url.split('/')[])
 
     if (!localStorage["token"]) {
-      console.log(1)
+      console.log(1);
       var login = true;
       var contFunc = () => {
         return new tc_login();
@@ -86,14 +93,14 @@ export class tinycloud extends LitElement {
     }
     var menu = [];
     if (!login) {
-      setCookie("token",localStorage["token"],-1);
-            if (this.url == "/") {
-      location.hash = "/files";
-    }
+      setCookie("token", localStorage["token"], -1);
+      if (this.url == "/") {
+        location.hash = "/files";
+      }
       for (var i in this.routes) {
         menu.push([this.routes[i][1], this.routes[i][0], i]);
       }
-      var contFunc=this.routes[this.url.split("/")[1]][0];
+      var contFunc = this.routes[this.url.split("/")[1]][0];
     }
     return html`<body>
       <div id="header">

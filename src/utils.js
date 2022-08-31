@@ -7,19 +7,16 @@ export function cleanPath(pathstr) {
       .join("/")
   );
 }
-export function setCookie(key,value,exp)
-{
-  document.cookie = key + "=" + value //+ "; max-age=" +exp;
+export function setCookie(key, value, exp) {
+  document.cookie = key + "=" + value; //+ "; max-age=" +exp;
 }
 
-export function getCookie(key)
-{
+export function getCookie(key) {
   var name = key + "=";
-  var ca = document.cookie.split(';');
-  for(var i=0; i<ca.length; i++) 
-  {
+  var ca = document.cookie.split(";");
+  for (var i = 0; i < ca.length; i++) {
     var c = ca[i].trim();
-    if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+    if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
   }
   return undefined;
 }

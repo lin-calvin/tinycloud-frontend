@@ -14,7 +14,7 @@ export class tc_filelist extends LitElement {
     showHidden: {},
     apiBase: {},
     readOnly: {},
-    token: {}
+    token: {},
   };
   static styles = css`
     a {
@@ -33,7 +33,7 @@ export class tc_filelist extends LitElement {
       this.file_upload.style.display = "none";
     }
     return fetch(this.apiBase + this.url + "?json_mode=1", {
-      method: "PROPFIND",headers:{"Authorization":"Bearer "+this.token}
+      method: "PROPFIND",
     }).then((res) => {
       if (res.ok) {
         if (this.file_upload) {
@@ -77,7 +77,7 @@ export class tc_filelist extends LitElement {
       return 0;
     }
     fetch(this.apiBase + this.url + "/" + filename + "?json_mode=1", {
-      method: "DELETE",headers:{"Authorization":"Bearer "+this.token}
+      method: "DELETE",
     }).then((res) => {
       if (res.ok) {
         this.loadData();
@@ -86,7 +86,7 @@ export class tc_filelist extends LitElement {
   };
   mkdir = (dirname) => {
     fetch(this.apiBase + this.url + "/" + dirname + "?json_mode=1", {
-      method: "MKCOL",headers:{"Authorization":"Bearer "+this.token}
+      method: "MKCOL",
     }).then((res) => {
       if (res.ok) {
         this.loadData();
@@ -147,8 +147,7 @@ export class tc_filelist extends LitElement {
     this.url = "/";
     this.apiBase = "/dav/";
     this.readOnly = false;
-    this.token=localStorage["token"]
-
+    this.token = localStorage["token"];
   }
   hasFile(filename) {
     var i;
