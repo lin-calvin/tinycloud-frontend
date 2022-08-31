@@ -231,17 +231,17 @@ export class tc_filelist extends LitElement {
             [
               "dir",
               () =>
-                html`<a id=file-${file.name}  tc-filename=${file.name} class=dir href=#${this.urlRoot}/${this.url}/${file.name}/>${file.name}/</a>`,
+                html`<a id=file-${file.name}  tc-filename=${file.name} class=dir href=#${cleanPath(this.urlRoot+"/"+this.url+"/"+file.name)}/>${file.name}/</a>`,
             ],
             [
               "broken",
               () =>
-                html`<a id=file-${file.name}  tc-filename=${file.name} class=broken href=#${this.urlRoot}/${this.url}/${file.name}/>${file.name}/</a>`,
+                html`<a id=file-${file.name}  tc-filename=${file.name} class=broken href=${cleanPath(this.apiBase+"/"+this.url+"/"+file.name)}>${file.name}/</a>`,
             ],
             [
               "file",
               () =>
-                html`<a class=file id=file-${file.name} tc-filename=${file.name} href=${this.apiBase}/${this.url}/${file.name} download=${file.name}>${file.name}</a>`,
+                html`<a class=file id=file-${file.name} tc-filename=${file.name} href=${cleanPath(this.apiBase+"/"+this.url+"/"+file.name)} download=${file.name}>${file.name}</a>`,
             ],
             [
               "uploading",
@@ -258,7 +258,7 @@ export class tc_filelist extends LitElement {
             [
               "mountpoint",
               () =>
-                html`<a class=mountpoint id=file-${file.name} tc-filename=${file.name} href=#${this.urlRoot}/${this.url}/${file.name}>${file.name}</a>`,
+                html`<a class=mountpoint id=file-${file.name} tc-filename=${file.name} href=#${cleanPath(this.urlRoot+"/"+this.url+"/"+file.name)}>${file.name}</a>`,
             ],
           ])}</br>`
       )}</div>`;
