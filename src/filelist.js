@@ -4,6 +4,7 @@ import { msg, updateWhenLocaleChanges } from "@lit/localize";
 
 import { cleanPath } from "./utils.js";
 import { tc_contextmenu } from "./contextmenu.js";
+import { tc_newshare } from "./shares.js"
 export class tc_filelist extends LitElement {
   static properties = {
     files: {},
@@ -108,11 +109,15 @@ export class tc_filelist extends LitElement {
         },
       };
       if (!this.readOnly) {
+      this.menu.menu[msg("Create share")] = () => {
+          var newshare=new tc_newshare()
+          newshare.path=this.url+"/"+filename
+          this.shadowRoot.appendChild(newshare)
+        };
         this.menu.menu[msg("Delete file")] = () => {
           this.delete_file(filename);
         };
       }
-      this.menu.show(e);
     } else {
       this.menu.menu = {
         [msg("Show hidden files")]: () => {
@@ -131,8 +136,8 @@ export class tc_filelist extends LitElement {
           };
         }
       }
-      this.menu.show(e);
     }
+    this.menu.show(e);
   };
   constructor() {
     super();
@@ -193,7 +198,6 @@ export class tc_filelist extends LitElement {
     this.update();
     this.scrollToFile(filename);
   };
-  // Render the UI as a function of component stat
   render() {
     this.renderRoot.removeEventListener("contextmenu", this.contextmenu);
     this.renderRoot.addEventListener("contextmenu", this.contextmenu);
@@ -231,17 +235,38 @@ export class tc_filelist extends LitElement {
             [
               "dir",
               () =>
-                html`<a id=file-${file.name}  tc-filename=${file.name} class=dir href=#${cleanPath(this.urlRoot+"/"+this.url+"/"+file.name)}/>${file.name}/</a>`,
+                html`<a id=file-${file.name}  tc-filename=${
+                  file.name
+                } class=dir href=#${cleanPath(
+                  this.urlRoot + "/" + this.url + "/" + file.name
+                )}/>${file.name}/</a>`,
             ],
             [
               "broken",
               () =>
-                html`<a id=file-${file.name}  tc-filename=${file.name} class=broken href=${cleanPath(this.apiBase+"/"+this.url+"/"+file.name)}>${file.name}/</a>`,
+                html`<a
+                  id="file-${file.name}"
+                  tc-filename=${file.name}
+                  class="broken"
+                  href=${cleanPath(
+                    this.apiBase + "/" + this.url + "/" + file.name
+                  )}
+                  >${file.name}/</a
+                >`,
             ],
             [
               "file",
               () =>
-                html`<a class=file id=file-${file.name} tc-filename=${file.name} href=${cleanPath(this.apiBase+"/"+this.url+"/"+file.name)} download=${file.name}>${file.name}</a>`,
+                html`<a
+                  class="file"
+                  id="file-${file.name}"
+                  tc-filename=${file.name}
+                  href=${cleanPath(
+                    this.apiBase + "/" + this.url + "/" + file.name
+                  )}
+                  download=${file.name}
+                  >${file.name}</a
+                >`,
             ],
             [
               "uploading",
@@ -258,7 +283,15 @@ export class tc_filelist extends LitElement {
             [
               "mountpoint",
               () =>
-                html`<a class=mountpoint id=file-${file.name} tc-filename=${file.name} href=#${cleanPath(this.urlRoot+"/"+this.url+"/"+file.name)}>${file.name}</a>`,
+                html`<a
+                  class="mountpoint"
+                  id="file-${file.name}"
+                  tc-filename=${file.name}
+                  href="#${cleanPath(
+                    this.urlRoot + "/" + this.url + "/" + file.name
+                  )}"
+                  >${file.name}</a
+                >`,
             ],
           ])}</br>`
       )}</div>`;

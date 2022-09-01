@@ -2,6 +2,22 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
 <file target-language="zh-CN" source-language="en" original="lit-localize-inputs" datatype="plaintext">
 <body>
+<trans-unit id="sd7fc6c30bc07c19e">
+  <source>Create share</source>
+  <target>共享</target>
+</trans-unit>
+<trans-unit id="s4113e904f655f12e">
+  <source>Write access</source>
+  <target>写权限</target>
+</trans-unit>
+<trans-unit id="s382a2aa3984474dd">
+  <source>Create</source>
+  <target>创建</target>
+</trans-unit>
+<trans-unit id="s2ceb11be2290bb1b">
+  <source>Cancel</source>
+  <target>取消</target>
+</trans-unit>
 <trans-unit id="s9537bfad097c928d">
   <source>No such file or directory</source>
   <target>没有这个文件或目录</target>

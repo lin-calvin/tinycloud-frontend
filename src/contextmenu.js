@@ -1,4 +1,5 @@
 import { LitElement, html, css } from "lit";
+import { msg, updateWhenLocaleChanges } from "@lit/localize";
 export class tc_contextmenu extends LitElement {
   static properties = { menu: {} };
   static styles = css`
