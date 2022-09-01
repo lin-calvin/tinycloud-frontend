@@ -111,7 +111,7 @@ export class tc_filelist extends LitElement {
       if (!this.readOnly) {
       this.menu.menu[msg("Create share")] = () => {
           var newshare=new tc_newshare()
-          newshare.path=this.url+"/"+filename
+          newshare.path=cleanPath(this.url+"/"+filename)
           this.shadowRoot.appendChild(newshare)
         };
         this.menu.menu[msg("Delete file")] = () => {

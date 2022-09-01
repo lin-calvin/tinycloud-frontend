@@ -41,7 +41,7 @@ export class tc_newshare extends LitElement {
   static styles = css`
     #newshare {
       width: 30%;
-      height: 25%;
+      height: 15%;
       overflow: auto;
       margin: auto;
       position: fixed;
@@ -69,9 +69,9 @@ export class tc_newshare extends LitElement {
   render() {
     return html`<div id=newshare >${msg(
       "Create share"
-    )}</br><input id=write type=checkbox>${msg(
+    )}&nbsp${this.path}</br><input id=write type=checkbox>${msg(
       "Write access"
-    )}</input><button @click=${this.remove}>${msg("Cancel")}</button><button @click=${this.createShare}>${msg("Create")}</button></div>`;
+    )}</input></br><div align=center id=button><button @click=${this.remove}>${msg("Cancel")}</button><button @click=${this.createShare}>${msg("Create")}</button></div></div>`;
   }
 }
 customElements.define("tc-shares", tc_shares);
