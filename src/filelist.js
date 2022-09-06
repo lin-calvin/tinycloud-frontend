@@ -221,14 +221,14 @@ export class tc_filelist extends LitElement {
     }
 
     var prev = this.url.split("/").slice(0, -2).join("/");
-    if (this.url != "/") {
+    if (cleanPath(this.url) != "/") {
       prev = html`<a class=dir href=#${this.urlRoot}/${prev}>../</a></br>`;
     } else {
       prev = html``;
     }
     return html`
       ${this.menu}
-      <strong>Path:${decodeURIComponent(this.url)}</strong></br>
+      <strong>Path:${cleanPath(decodeURIComponent(this.url))}</strong></br>
       <div>
       
       ${prev}
