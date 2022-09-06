@@ -24,7 +24,9 @@ export class tinycloud extends LitElement {
     window.setLocale = setLocale;
     var browserLang = navigator.language;
     updateWhenLocaleChanges(this);
-    setLocale(decideLocale(browserLang) || en);
+    setLocale(decideLocale(browserLang) || en).then(() => {
+      this.localeOk = true;
+    });
 
     if (location.hash.split("#")[1]) {
       this.url = cleanPath(location.hash.split("#")[1]);
@@ -45,8 +47,8 @@ export class tinycloud extends LitElement {
       logout: [
         () => {
           delete localStorage["token"];
-          location.hash="files"
-          this.update()
+          location.hash = "files";
+          this.update();
         },
         () => msg("Logout"),
       ],
@@ -83,6 +85,9 @@ export class tinycloud extends LitElement {
   // Render the UI as a function of component state
   render() {
     //console.log(this.url.split('/')[])
+    if (!this.localeOk) {
+      return;
+    }
     if (this.needLogin == undefined) {
       if (localStorage["token"]) {
         fetch("/api/auth/check", {
@@ -91,12 +96,12 @@ export class tinycloud extends LitElement {
           body: JSON.stringify({ token: localStorage["token"] }),
         }).then((res) => {
           res.json().then(() => {
-            this.needLogin = res.status != 200
+            this.needLogin = res.status != 200;
+            this.update();
           });
         });
-      }
-      else{
-        this.needLogin=true
+      } else {
+        this.needLogin = true;
       }
       return;
     }

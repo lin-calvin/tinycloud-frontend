@@ -241,7 +241,7 @@ export class tc_filelist extends LitElement {
                 html`<a id=file-${file.name}  tc-filename=${
                   file.name
                 } class=dir href=#${cleanPath(
-                  this.urlRoot||"" + "/" + this.url + "/" + file.name
+                  this.urlRoot || "" + "/" + this.url + "/" + file.name
                 )}/>${file.name}/</a>`,
             ],
             [
@@ -291,7 +291,7 @@ export class tc_filelist extends LitElement {
                   id="file-${file.name}"
                   tc-filename=${file.name}
                   href="#${cleanPath(
-                    this.urlRoot||""  + "/" + this.url + "/" + file.name
+                    this.urlRoot || "" + "/" + this.url + "/" + file.name
                   )}"
                   >${file.name}</a
                 >`,

@@ -19,6 +19,17 @@ export class tc_shares extends LitElement {
       });
     });
   }
+  removeShare(id) {
+    fetch("/api/shares/del", {
+      method: "POST",
+      header: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: id }),
+    }).then((res) => {
+      if (res.status == 200) {
+        this.loadData();
+      }
+    });
+  }
   render() {
     if (!this.shares) {
       return;
@@ -30,7 +41,7 @@ export class tc_shares extends LitElement {
         path = "/";
       }
       h.push(
-        html`<a href=/shares/${i}>${location.origin}/shares/${i}</a>&nbspPath: ${path}&nbsp|&nbspUser:${this.shares[i].username}<button>del</button></br>`
+        html`<a href=/shares/${i}>${location.origin}/shares/${i}</a>&nbspPath: ${path}&nbsp|&nbspUser:${this.shares[i].username}<button @click=${()=>{this.removeShare(i)}}>del</button></br>`
       );
     }
     return html`${h}`;
