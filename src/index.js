@@ -26,6 +26,7 @@ export class tinycloud extends LitElement {
     updateWhenLocaleChanges(this);
     setLocale(decideLocale(browserLang) || en).then(() => {
       this.localeOk = true;
+      this.update();
     });
 
     if (location.hash.split("#")[1]) {
@@ -88,22 +89,23 @@ export class tinycloud extends LitElement {
     if (!this.localeOk) {
       return;
     }
-    if (this.needLogin == undefined) {
-      if (localStorage["token"]) {
-        fetch("/api/auth/check", {
-          method: "POST",
-          header: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token: localStorage["token"] }),
-        }).then((res) => {
-          res.json().then(() => {
-            this.needLogin = res.status != 200;
-            this.update();
-          });
+    if (this.needLogin == undefined && localStorage["token"]) {
+      fetch("/api/auth/check", {
+        method: "POST",
+        header: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: localStorage["token"] }),
+      }).then((res) => {
+        res.json().then((res) => {
+          console.log(2)
+          this.needLogin = res.status != 200;
+          this.update();
         });
-      } else {
-        this.needLogin = true;
-      }
+      });
       return;
+    } 
+    if (! localStorage["token"]) {
+      console.log(1)
+      this.needLogin = true;
     }
     if (this.needLogin) {
       var login = true;

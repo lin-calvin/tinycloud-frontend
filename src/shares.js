@@ -41,7 +41,13 @@ export class tc_shares extends LitElement {
         path = "/";
       }
       h.push(
-        html`<a href=/shares/${i}>${location.origin}/shares/${i}</a>&nbspPath: ${path}&nbsp|&nbspUser:${this.shares[i].username}<button @click=${()=>{this.removeShare(i)}}>del</button></br>`
+        html`<a href=/shares/${i}>${
+          location.origin
+        }/shares/${i}</a>&nbspPath: ${path}&nbsp|&nbspUser:${
+          this.shares[i].username
+        }<button @click=${() => {
+          this.removeShare(i);
+        }}>del</button></br>`
       );
     }
     return html`${h}`;
