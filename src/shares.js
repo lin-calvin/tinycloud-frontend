@@ -59,19 +59,23 @@ export class tc_newshare extends LitElement {
   createShare() {
     fetch("/api/shares/new", {
       method: "POST",
-      header:{'Content-Type': 'application/json',},
-      body:  JSON.stringify({
+      header: { "Content-Type": "application/json" },
+      body: JSON.stringify({
         path: this.path,
         mode: (this.shadowRoot.getElementById("write").checked && "rw") || "r",
       }),
     }).then(this.remove());
   }
   render() {
-    return html`<div id=newshare >${msg(
-      "Create share"
-    )}&nbsp${this.path}</br><input id=write type=checkbox>${msg(
+    return html`<div id=newshare >${msg("Create share")}&nbsp${
+      this.path
+    }</br><input id=write type=checkbox>${msg(
       "Write access"
-    )}</input></br><div align=center id=button><button @click=${this.remove}>${msg("Cancel")}</button><button @click=${this.createShare}>${msg("Create")}</button></div></div>`;
+    )}</input></br><div align=center id=button><button @click=${
+      this.remove
+    }>${msg("Cancel")}</button><button @click=${this.createShare}>${msg(
+      "Create"
+    )}</button></div></div>`;
   }
 }
 customElements.define("tc-shares", tc_shares);

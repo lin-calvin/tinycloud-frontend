@@ -8,7 +8,7 @@ export function cleanPath(pathstr) {
   );
 }
 export function setCookie(key, value, exp) {
-  document.cookie = key + "=" + value; //+ "; max-age=" +exp;
+  document.cookie = key + "=" + value + ((exp && "; max-age=" + exp) || "");
 }
 
 export function getCookie(key) {

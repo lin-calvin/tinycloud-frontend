@@ -45,8 +45,8 @@ export class tinycloud extends LitElement {
       logout: [
         () => {
           delete localStorage["token"];
-          location.hash = "";
-          this.update();
+          location.hash="files"
+          this.update()
         },
         () => msg("Logout"),
       ],
@@ -83,9 +83,24 @@ export class tinycloud extends LitElement {
   // Render the UI as a function of component state
   render() {
     //console.log(this.url.split('/')[])
-
-    if (!localStorage["token"]) {
-      console.log(1);
+    if (this.needLogin == undefined) {
+      if (localStorage["token"]) {
+        fetch("/api/auth/check", {
+          method: "POST",
+          header: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: localStorage["token"] }),
+        }).then((res) => {
+          res.json().then(() => {
+            this.needLogin = res.status != 200
+          });
+        });
+      }
+      else{
+        this.needLogin=true
+      }
+      return;
+    }
+    if (this.needLogin) {
       var login = true;
       var contFunc = () => {
         return new tc_login();
@@ -93,7 +108,7 @@ export class tinycloud extends LitElement {
     }
     var menu = [];
     if (!login) {
-      setCookie("token", localStorage["token"], -1);
+      setCookie("token", localStorage["token"]);
       if (this.url == "/") {
         location.hash = "/files";
       }

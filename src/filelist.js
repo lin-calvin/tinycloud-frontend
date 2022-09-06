@@ -4,7 +4,7 @@ import { msg, updateWhenLocaleChanges } from "@lit/localize";
 
 import { cleanPath } from "./utils.js";
 import { tc_contextmenu } from "./contextmenu.js";
-import { tc_newshare } from "./shares.js"
+import { tc_newshare } from "./shares.js";
 export class tc_filelist extends LitElement {
   static properties = {
     files: {},
@@ -77,16 +77,19 @@ export class tc_filelist extends LitElement {
     if (!confirm(msg("Delete file?"))) {
       return 0;
     }
-    fetch(this.apiBase + this.url + "/" + filename + "?json_mode=1", {
-      method: "DELETE",
-    }).then((res) => {
+    fetch(
+      cleanPath(this.apiBase + this.url + "/" + filename) + "?json_mode=1",
+      {
+        method: "DELETE",
+      }
+    ).then((res) => {
       if (res.ok) {
         this.loadData();
       }
     });
   };
   mkdir = (dirname) => {
-    fetch(this.apiBase + this.url + "/" + dirname + "?json_mode=1", {
+    fetch(cleanPath(this.apiBase + this.url + "/" + dirname) + "?json_mode=1", {
       method: "MKCOL",
     }).then((res) => {
       if (res.ok) {
@@ -109,10 +112,10 @@ export class tc_filelist extends LitElement {
         },
       };
       if (!this.readOnly) {
-      this.menu.menu[msg("Create share")] = () => {
-          var newshare=new tc_newshare()
-          newshare.path=cleanPath(this.url+"/"+filename)
-          this.shadowRoot.appendChild(newshare)
+        this.menu.menu[msg("Create share")] = () => {
+          var newshare = new tc_newshare();
+          newshare.path = cleanPath(this.url + "/" + filename);
+          this.shadowRoot.appendChild(newshare);
         };
         this.menu.menu[msg("Delete file")] = () => {
           this.delete_file(filename);
@@ -238,7 +241,7 @@ export class tc_filelist extends LitElement {
                 html`<a id=file-${file.name}  tc-filename=${
                   file.name
                 } class=dir href=#${cleanPath(
-                  this.urlRoot + "/" + this.url + "/" + file.name
+                  this.urlRoot||"" + "/" + this.url + "/" + file.name
                 )}/>${file.name}/</a>`,
             ],
             [
@@ -288,7 +291,7 @@ export class tc_filelist extends LitElement {
                   id="file-${file.name}"
                   tc-filename=${file.name}
                   href="#${cleanPath(
-                    this.urlRoot + "/" + this.url + "/" + file.name
+                    this.urlRoot||""  + "/" + this.url + "/" + file.name
                   )}"
                   >${file.name}</a
                 >`,

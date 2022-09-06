@@ -11,13 +11,14 @@ export class tc_login extends LitElement {
     setCookie("token", "", 0);
     var username = this.shadowRoot.getElementById("username").value;
     var passwd = this.shadowRoot.getElementById("passwd").value;
-    fetch("/api/login", {
+    fetch("/api/auth/login", {
       method: "POST",
       headers: { Authorization: "Basic " + btoa(username + ":" + passwd) },
     }).then((res) => {
       res.json().then((res) => {
         if (res.status == 200) {
           localStorage.token = res.token;
+          window.tinycloud.needLogin = false;
           window.tinycloud.update();
         }
       });
