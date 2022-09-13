@@ -10,13 +10,13 @@
   <source>Write access</source>
   <target>写权限</target>
 </trans-unit>
-<trans-unit id="s382a2aa3984474dd">
-  <source>Create</source>
-  <target>创建</target>
-</trans-unit>
 <trans-unit id="s2ceb11be2290bb1b">
   <source>Cancel</source>
   <target>取消</target>
+</trans-unit>
+<trans-unit id="s382a2aa3984474dd">
+  <source>Create</source>
+  <target>创建</target>
 </trans-unit>
 <trans-unit id="s9537bfad097c928d">
   <source>No such file or directory</source>
@@ -37,6 +37,10 @@
 <trans-unit id="s05edf371f15f3715">
   <source>Download file</source>
   <target>下载文件</target>
+</trans-unit>
+<trans-unit id="sb0060b46be323f49">
+  <source>Copy share link</source>
+  <target>复制共享链接</target>
 </trans-unit>
 <trans-unit id="s997be255884aebb8">
   <source>Delete file</source>

@@ -2,7 +2,7 @@ import { LitElement, html, css } from "lit";
 import { choose } from "lit/directives/choose.js";
 import { msg, updateWhenLocaleChanges } from "@lit/localize";
 
-import { cleanPath } from "./utils.js";
+import { cleanPath, copyText } from "./utils.js";
 import { tc_contextmenu } from "./contextmenu.js";
 import { tc_newshare } from "./shares.js";
 export class tc_filelist extends LitElement {
@@ -10,12 +10,12 @@ export class tc_filelist extends LitElement {
     files: {},
     url: {},
     urlRoot: {},
-    menu: {},
     file_upload: {},
     showHidden: {},
     apiBase: {},
     readOnly: {},
     token: {},
+    share: {},
   };
   static styles = css`
     a {
@@ -33,7 +33,7 @@ export class tc_filelist extends LitElement {
     if (this.file_upload) {
       this.file_upload.style.display = "none";
     }
-    return fetch(this.apiBase + this.url + "?json_mode=1", {
+    fetch(this.apiBase + this.url + "?json_mode=1", {
       method: "PROPFIND",
     }).then((res) => {
       if (res.ok) {
@@ -72,6 +72,21 @@ export class tc_filelist extends LitElement {
         }
       }
     });
+    if (!this.share) {
+      fetch("/api/shares").then((res) => {
+        res.json().then((res) => {
+          var url = cleanPath(this.url);
+          var shares = {};
+          for (var i in res) {
+            var path = cleanPath(res[i].path);
+            if (path.startsWith(url)) {
+              shares[path.slice(url.length)] = { path: path, id: i };
+            }
+          }
+          this.shares = shares;
+        });
+      });
+    }
   };
   delete_file = (filename) => {
     if (!confirm(msg("Delete file?"))) {
@@ -111,14 +126,22 @@ export class tc_filelist extends LitElement {
           e.originalTarget.dispatchEvent(m);
         },
       };
-      if (!this.readOnly) {
-        this.menu.menu[msg("Create share")] = () => {
+      if (!this.readOnly && !this.share && !(filename in this.shares)) {
+        this.menu.menu[msg("Copy share link")] = () => {
           var newshare = new tc_newshare();
           newshare.path = cleanPath(this.url + "/" + filename);
           this.shadowRoot.appendChild(newshare);
         };
         this.menu.menu[msg("Delete file")] = () => {
           this.delete_file(filename);
+        };
+      }
+      if (filename in (this.shares || {})) {
+        this.menu.menu[msg("Copy share link")] = () => {
+          copyText(
+            `${location.origin}/shares/${this.shares[filename].id}`,
+            this.shadowRoot
+          );
         };
       }
     } else {

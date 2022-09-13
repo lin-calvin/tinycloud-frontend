@@ -96,15 +96,15 @@ export class tinycloud extends LitElement {
         body: JSON.stringify({ token: localStorage["token"] }),
       }).then((res) => {
         res.json().then((res) => {
-          console.log(2)
+          console.log(2);
           this.needLogin = res.status != 200;
           this.update();
         });
       });
       return;
-    } 
-    if (! localStorage["token"]) {
-      console.log(1)
+    }
+    if (!localStorage["token"]) {
+      console.log(1);
       this.needLogin = true;
     }
     if (this.needLogin) {

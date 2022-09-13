@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { msg, updateWhenLocaleChanges } from "@lit/localize";
+import { copyText } from "./utils.js";
 export class tc_shares extends LitElement {
   static properties = { shares: {} };
   static styles = css`
@@ -81,7 +82,15 @@ export class tc_newshare extends LitElement {
         path: this.path,
         mode: (this.shadowRoot.getElementById("write").checked && "rw") || "r",
       }),
-    }).then(this.remove());
+    }).then((res) => {
+      console.log(1)
+      if (res.status == 200) {
+        res.json().then((res) => {
+          copyText(`${location.origin}/shares/${res.id}`, this.shadowRoot)
+          this.remove()
+        });
+      }
+    });
   }
   render() {
     return html`<div id=newshare >${msg("Create share")}&nbsp${

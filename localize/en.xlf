@@ -8,11 +8,11 @@
 <trans-unit id="s4113e904f655f12e">
   <source>Write access</source>
 </trans-unit>
-<trans-unit id="s382a2aa3984474dd">
-  <source>Create</source>
-</trans-unit>
 <trans-unit id="s2ceb11be2290bb1b">
   <source>Cancel</source>
+</trans-unit>
+<trans-unit id="s382a2aa3984474dd">
+  <source>Create</source>
 </trans-unit>
 <trans-unit id="s9537bfad097c928d">
   <source>No such file or directory</source>
@@ -28,6 +28,9 @@
 </trans-unit>
 <trans-unit id="s05edf371f15f3715">
   <source>Download file</source>
+</trans-unit>
+<trans-unit id="sb0060b46be323f49">
+  <source>Copy share link</source>
 </trans-unit>
 <trans-unit id="s997be255884aebb8">
   <source>Delete file</source>

@@ -1,0 +1,38 @@
+import { LitElement, html, css } from "lit";
+import { tc_filelist, tc_fileupload } from "./filelist.js";
+import { cleanPath } from "./utils.js";
+export class tc_share extends LitElement {
+  static properties = { id: {}, url: {}, fullUrl: {}, info: {} };
+  constructor() {
+    super();
+    window.onhashchange = () => {
+      this.loadData();
+    };
+    this.fullUrl = location.pathname.split("/shares/")[1];
+    this.id = this.fullUrl.split("/")[0];
+    this.loadData();
+  }
+  loadData() {
+    this.url = cleanPath(
+      this.fullUrl.split("/").slice(1).join("/") + "/" + location.hash.slice(1)
+    );
+    fetch("/api/shares/info/" + this.id).then((res) => {
+      res.json().then((res) => {
+        this.info = res;
+      });
+    });
+  }
+  render() {
+    if (!this.info) {
+      return;
+    }
+    var filelist = new tc_filelist();
+    filelist.share=true;
+    filelist.readOnly = this.info.mode == "r";
+    filelist.apiBase = "/api/shares/dav/" + this.id;
+    filelist.url = "/" + this.url;
+    filelist.loadData();
+    return html`${filelist}`;
+  }
+}
+customElements.define("tc-share", tc_share);

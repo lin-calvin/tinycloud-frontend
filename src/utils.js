@@ -20,3 +20,12 @@ export function getCookie(key) {
   }
   return undefined;
 }
+
+export function copyText(text, body) {
+  var input = document.createElement("input");
+  input.value = text;
+  body.appendChild(input);
+  input.select();
+  document.execCommand("copy")
+  input.remove();
+}
