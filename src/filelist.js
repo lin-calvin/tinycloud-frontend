@@ -76,6 +76,7 @@ export class tc_filelist extends LitElement {
       fetch("/api/shares").then((res) => {
         res.json().then((res) => {
           var url = cleanPath(this.url);
+
           var shares = {};
           for (var i in res) {
             var path = cleanPath(res[i].path);
@@ -169,7 +170,7 @@ export class tc_filelist extends LitElement {
     super();
     updateWhenLocaleChanges(this);
     if (localStorage.getItem("showHidden") != null) {
-      this.showHidden = localStorage.getItem("showHidden");
+      this.showHidden = localStorage.getItem("showHidden")==true;
     } else {
       this.showHidden = false;
     }

@@ -1,6 +1,7 @@
 import { LitElement, html, css } from "lit";
 import { msg, updateWhenLocaleChanges } from "@lit/localize";
 import { setCookie } from "./utils.js";
+
 export class tc_login extends LitElement {
   static properties = {};
   constructor() {

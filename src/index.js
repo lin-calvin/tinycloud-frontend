@@ -28,7 +28,6 @@ export class tinycloud extends LitElement {
       this.localeOk = true;
       this.update();
     });
-
     if (location.hash.split("#")[1]) {
       this.url = cleanPath(location.hash.split("#")[1]);
     } else {
